@@ -1,5 +1,6 @@
 from tkinter import *
 from tkinter import filedialog
+from tkinter import messagebox
 from PIL import Image, ImageTk
 from Tranformations import Transformations
 import cv2
@@ -12,12 +13,42 @@ DEFAULT_HEIGHT = 300
 def open_explorer():
     open_explorer.selected_file = filedialog.askopenfilename(initialdir="./")
     #print("selected file is : ",  open_explorer.selected_file)
-    selected_image = Image.open(open_explorer.selected_file)
+    path = "Inputs/current_input.png"
+    input_ref_img = cv2.imread(open_explorer.selected_file)
+    cv2.imwrite(path,input_ref_img)
+    selected_image = Image.open(path)
     selected_image = selected_image.resize((DEFAULT_WIDTH,DEFAULT_HEIGHT))
     selected_photo = ImageTk.PhotoImage(selected_image)
     input_photo_panel = Label(window, image=selected_photo, bg="white", relief="groove")
     input_photo_panel.image = selected_photo
     input_photo_panel.place(x=200+offset_param, y=50)
+    place_image_details(open_explorer.selected_file,input_ref_img.shape)
+
+def place_image_details(file_path,size):
+    global properties_label, img_name, img_name_val, img_ht, img_ht_val, img_wd, img_wd_val
+
+    file_path = str(file_path)
+    file_path = file_path[::-1]
+    name = file_path[:file_path.index('/')]
+    name = name[::-1]
+    print(name)
+    height = size[0]
+    width = size[1]
+
+    properties_label = Label(window, text="Image Details", bg="white", fg="#337ab7", font=("Helvetica", 14))
+    properties_label.place(x=820 + offset_param, y=50)
+    img_name = Label(window, text="Name", bg="white", fg="#337ab7", font=("Helvetica", 10, "bold"))
+    img_name.place(x=820 + offset_param, y=90)
+    img_name_val = Label(window, text=name, bg="white", fg="#337ab7", font=("Helvetica", 10))
+    img_name_val.place(x=910 + offset_param, y=90)
+    img_ht = Label(window, text="Height", bg="white", fg="#337ab7", font=("Helvetica", 10, "bold"))
+    img_ht.place(x=820 + offset_param, y=120)
+    img_ht_val = Label(window, text = str(height) + " px", bg="white", fg="#337ab7", font=("Helvetica", 10))
+    img_ht_val.place(x=910 + offset_param, y=120)
+    img_wd = Label(window, text="Width", bg="white", fg="#337ab7", font=("Helvetica", 10, "bold"))
+    img_wd.place(x=820 + offset_param, y=150)
+    img_wd_val = Label(window, text = str(width) +" px", bg="white", fg="#337ab7", font=("Helvetica", 10))
+    img_wd_val.place(x=910 + offset_param, y=150)
 
 
 def init_operations():
@@ -137,28 +168,76 @@ def transform_image():
         y_factor = float(scale_y_entry.get())
         selected_interpolation = interpolation_choice.get()
         transformation_ref = Transformations()
-        output_img_name, height, width= transformation_ref.scale(open_explorer.selected_file, x_factor, y_factor,selected_interpolation,show_full_image)
-        place_output_image(output_img_name, height, width)
+        try:
+            output_img_name, height, width= transformation_ref.scale_image(open_explorer.selected_file, x_factor, y_factor,selected_interpolation)
+            place_output_image(output_img_name, height, width)
+
+        except Exception as exp:
+            messagebox.showerror("Error","Please select the input file")
 
 
 def place_output_image(output_img_name, height, width):
+    global save_img_name_ref
+
     output_image = Image.open(output_img_name)
     output_image = output_image.resize((width, height), Image.ANTIALIAS)
     output_photo = ImageTk.PhotoImage(output_image)
 
+    save_img_name_ref = output_img_name
+
+    """
     output_photo_panel = Label(window, image=output_photo, bg="white", relief="groove")
     output_photo_panel.image = output_photo
     output_photo_panel.place(x=800 + offset_param, y=50)
+    """
 
     output_canvas = Toplevel()
-    canvas = Canvas(output_canvas, width=width, height=height)
+    canvas = Canvas(output_canvas, width=width+100, height=height+100)
     canvas.pack(expand=YES, fill=BOTH)
-    
+
+    save_btn = Button(canvas, text="Save",width=7, bg="#5cb85c",fg="white",command=save_img)
+
+
     # image not visual
-    canvas.create_image(50, 10, image=output_photo, anchor=NW)
+    canvas.create_image(50, 50, image=output_photo, anchor=NW)
+    save_btn.place(x=width/2,y=20)
     # assigned the gif1 to the canvas object
     canvas.img = output_photo
 
+
+def save_img():
+    filename = filedialog.asksaveasfilename()
+    try :
+        cv2.imwrite(filename,cv2.imread(save_img_name_ref,0))
+        messagebox.showinfo('Success', 'Image has been saved')
+    except Exception as Exp:
+        messagebox.showerror("Sorry","Some error has occurred while saving")
+
+def reset():
+    global properties_label, img_name, img_name_val, img_ht, img_ht_val, img_wd, img_wd_val
+
+    init_default_input()
+    properties_label.place_forget()
+    img_name.place_forget()
+    img_name_val.place_forget()
+    img_ht.place_forget()
+    img_ht_val.place_forget()
+    img_wd.place_forget()
+    img_wd_val.place_forget()
+
+
+def init_default_input():
+    global offset_param, default_input_file_path, input_image, input_photo, input_photo_panel
+
+    default_input_file_path = "default_input_image.png"
+
+    input_image = Image.open(default_input_file_path)
+    input_image = input_image.resize((DEFAULT_WIDTH, DEFAULT_HEIGHT), Image.ANTIALIAS)
+    input_photo = ImageTk.PhotoImage(input_image)
+
+    input_photo_panel = Label(window, image=input_photo, bg="white", relief="groove")
+    input_photo_panel.image = input_photo
+    input_photo_panel.place(x=200 + offset_param, y=50)
 
 window = Tk()
 
@@ -167,19 +246,28 @@ window.geometry("1000x500")
 window.title("Image Geometric Transformations")
 window.configure(background="white")
 offset_param = 0
+save_img_name_ref = None
+
 # placing input image
-input_title = Label(window,text="INPUT",bg="white",fg="Tomato",font=("Helvetica", 16))
-input_title.place(x=310+offset_param, y=15)
-default_input_file_path = "default_input_image.png"
+input_title = Label(window,text="Image Preview",bg="white",fg="Tomato",font=("Helvetica", 16))
+input_title.place(x=290+offset_param, y=15)
+default_input_file_path = None
+input_image = None
+input_photo = None
+input_photo_panel = None
+init_default_input()
 
-input_image = Image.open(default_input_file_path)
-input_image = input_image.resize((DEFAULT_WIDTH, DEFAULT_HEIGHT), Image.ANTIALIAS)
-input_photo = ImageTk.PhotoImage(input_image)
 
-input_photo_panel = Label(window, image = input_photo,bg="white",relief="groove")
-input_photo_panel.image = input_photo
-input_photo_panel.place(x=200+offset_param,y=50)
+#image details
+properties_label = None
+img_name = None
+img_name_val = None
+img_ht = None
+img_ht_val = None
+img_wd = None
+img_wd_val = None
 
+"""
 # placing output image
 output_title = Label(window,text="OUTPUT",bg="white",fg="Tomato",font=("Helvetica", 16))
 output_title.place(x=910+offset_param, y=15)
@@ -192,10 +280,11 @@ output_photo = ImageTk.PhotoImage(output_image)
 output_photo_panel = Label(window, image = output_photo,bg="white",relief="groove")
 output_photo_panel.image = output_photo
 output_photo_panel.place(x=800+offset_param,y=50)
+"""
 
 # browse input image
-browse_btn = Button(window,text="Browse",width=10,command=open_explorer, bg="DodgerBlue",fg="white",font="none 10 bold")
-browse_btn.place(x=310+offset_param, y=360)
+browse_btn = Button(window,text="Browse",width=7,command=open_explorer, bg="#337ab7",fg="white",font="none 10 bold")
+browse_btn.place(x=320+offset_param, y=360)
 
 #widgets for Scaling
 scale_x = None
@@ -205,7 +294,7 @@ scale_y_entry = None
 interpolations_popup = None
 interpolation_label = None
 interpolation_choice = StringVar(window)
-interpolation_techniques = {'Nearest Neigbhor','Bilinear','Cubic','Lanczos4'}
+interpolation_techniques = ['Nearest Neigbhor','Bilinear','Cubic','Lanczos4']
 interpolation_choice.set('Nearest Neigbhor')
 
 #widgets for Rotation
@@ -214,7 +303,7 @@ degrees_entry = None
 direction_label = None
 popupMenu = None
 direction = StringVar(window)
-choices = {'Clockwise','Anti-Clockwise'}
+choices = ['Clockwise','Anti-Clockwise']
 direction.set('Clockwise')
 
 #widgets for Translation
@@ -248,11 +337,7 @@ for idx,key in enumerate(keys):
                 value=key,
                 bg="white")
     option.place(x=x_counter+offset_param,y=y_counter)
-    x_counter += 175
-    if not changed_col and idx >= total_operations/2 - 1:
-        changed_col = True
-        x_counter = 100
-        y_counter = 460
+    y_counter += 30
 """
 # Interpolations
 interpolation_label = Label(window,text="Select Interpolation",bg="white",fg="DodgerBlue",font=("Helvetica", 14))
@@ -284,13 +369,14 @@ for idx,key in enumerate(keys):
 """
 
 # output image size
-output_type_label = Label(window,text="Output Image",bg="white",fg="DodgerBlue",font=("Helvetica", 14))
-output_type_label.place(x=100+offset_param,y=490)
+#output_type_label = Label(window,text="Output Image",bg="white",fg="DodgerBlue",font=("Helvetica", 14))
+#output_type_label.place(x=100+offset_param,y=490)
 
 output_type_var = IntVar()
 output_type_var.set(1000)
 
 output_type_dict = {}
+"""
 init_output_types()
 keys = output_type_dict.keys()
 total_output_types = len(keys)
@@ -306,15 +392,15 @@ for idx,key in enumerate(keys):
                 bg="white")
     option.place(x=x_counter+offset_param,y=y_counter)
     x_counter += 200
-
+"""
 
 # ok button
-ok_btn = Button(window,text="Ok",width=5,command=transform_image, bg="DodgerBlue",fg="white",font="none 10 bold")
-ok_btn.place(x=330+offset_param, y=560)
+ok_btn = Button(window,text="Show",width=7,command=transform_image, bg="#5cb85c",fg="white",font="none 10 bold")
+ok_btn.place(x=310+offset_param, y=620)
 
-# save button
-save_btn = Button(window,text="Save",width=5, bg="DodgerBlue",fg="white",font="none 10 bold")
-save_btn.place(x=400+offset_param, y=560)
+# reset button
+reset_btn = Button(window,text="Reset",width=7,command=reset, bg="#d9534f",fg="white",font="none 10 bold")
+reset_btn.place(x=390+offset_param, y=620)
 
 
 params_label = Label(window,text="Parameters",bg="white",fg="DodgerBlue",font=("Helvetica", 14))
