@@ -11,17 +11,25 @@ DEFAULT_HEIGHT = 300
 
 # open browser
 def open_explorer():
+    global input_selected_file
+
     open_explorer.selected_file = filedialog.askopenfilename(initialdir="./")
+    input_selected_file = open_explorer.selected_file
+
+    # handling cancel operation
+    if not input_selected_file:
+        return
+
     #print("selected file is : ",  open_explorer.selected_file)
     path = "Inputs/current_input.png"
-    input_ref_img = cv2.imread(open_explorer.selected_file)
+    input_ref_img = cv2.imread(input_selected_file)
     cv2.imwrite(path,input_ref_img)
     selected_image = Image.open(path)
     selected_image = selected_image.resize((DEFAULT_WIDTH,DEFAULT_HEIGHT))
     selected_photo = ImageTk.PhotoImage(selected_image)
     input_photo_panel = Label(window, image=selected_photo, bg="white", relief="groove")
     input_photo_panel.image = selected_photo
-    input_photo_panel.place(x=200+offset_param, y=50)
+    input_photo_panel.place(x=400+offset_param, y=50)
     place_image_details(open_explorer.selected_file,input_ref_img.shape)
 
 def place_image_details(file_path,size):
@@ -94,10 +102,10 @@ def create_widgets(operation_val):
     elif operation_val == 3:
         translate_x.place(x=800+offset_param, y=427)
         translate_x_entry.place(x=900+offset_param,y=430)
-        translate_x_entry.insert(0,"1")
+        translate_x_entry.insert(0,"0")
         translate_y.place(x=800+offset_param, y=457)
         translate_y_entry.place(x=900+offset_param, y=460)
-        translate_y_entry.insert(0, "1")
+        translate_y_entry.insert(0, "0")
 
 
 def operation_changed():
@@ -163,18 +171,30 @@ def transform_image():
     if image_display_var == 2000:
         show_full_image = True
 
+    transformation_ref = Transformations()
+
     if operation == 'Scaling':
         x_factor = float(scale_x_entry.get())
         y_factor = float(scale_y_entry.get())
         selected_interpolation = interpolation_choice.get()
-        transformation_ref = Transformations()
-        try:
-            output_img_name, height, width= transformation_ref.scale_image(open_explorer.selected_file, x_factor, y_factor,selected_interpolation)
+
+        if input_selected_file:
+            output_img_name, height, width= transformation_ref.scale_image(input_selected_file, x_factor, y_factor,selected_interpolation)
             place_output_image(output_img_name, height, width)
 
-        except Exception as exp:
+        else:
             messagebox.showerror("Error","Please select the input file")
 
+    elif operation == "Translation":
+        x_units = int(translate_x_entry.get())
+        y_units = int(translate_y_entry.get())
+
+        if input_selected_file:
+            output_img_name, height, width= transformation_ref.translate_image(input_selected_file, x_units ,y_units)
+            place_output_image(output_img_name, height, width)
+
+        else:
+            messagebox.showerror("Error","Please select the input file")
 
 def place_output_image(output_img_name, height, width):
     global save_img_name_ref
@@ -208,13 +228,14 @@ def place_output_image(output_img_name, height, width):
 def save_img():
     filename = filedialog.asksaveasfilename()
     try :
-        cv2.imwrite(filename,cv2.imread(save_img_name_ref,0))
+        cv2.imwrite(filename,cv2.imread(save_img_name_ref,1))
         messagebox.showinfo('Success', 'Image has been saved')
     except Exception as Exp:
         messagebox.showerror("Sorry","Some error has occurred while saving")
 
 def reset():
     global properties_label, img_name, img_name_val, img_ht, img_ht_val, img_wd, img_wd_val
+    global input_selected_file
 
     init_default_input()
     properties_label.place_forget()
@@ -224,6 +245,8 @@ def reset():
     img_ht_val.place_forget()
     img_wd.place_forget()
     img_wd_val.place_forget()
+
+    input_selected_file = None
 
 
 def init_default_input():
@@ -237,7 +260,7 @@ def init_default_input():
 
     input_photo_panel = Label(window, image=input_photo, bg="white", relief="groove")
     input_photo_panel.image = input_photo
-    input_photo_panel.place(x=200 + offset_param, y=50)
+    input_photo_panel.place(x=400 + offset_param, y=50)
 
 window = Tk()
 
@@ -246,11 +269,12 @@ window.geometry("1000x500")
 window.title("Image Geometric Transformations")
 window.configure(background="white")
 offset_param = 0
+input_selected_file = None
 save_img_name_ref = None
 
 # placing input image
 input_title = Label(window,text="Image Preview",bg="white",fg="Tomato",font=("Helvetica", 16))
-input_title.place(x=290+offset_param, y=15)
+input_title.place(x=490+offset_param, y=15)
 default_input_file_path = None
 input_image = None
 input_photo = None
@@ -284,7 +308,7 @@ output_photo_panel.place(x=800+offset_param,y=50)
 
 # browse input image
 browse_btn = Button(window,text="Browse",width=7,command=open_explorer, bg="#337ab7",fg="white",font="none 10 bold")
-browse_btn.place(x=320+offset_param, y=360)
+browse_btn.place(x=520+offset_param, y=360)
 
 #widgets for Scaling
 scale_x = None
@@ -316,7 +340,7 @@ init_widgets()
 
 # Operations
 operation_label = Label(window,text="Select Operation",bg="white",fg="DodgerBlue",font=("Helvetica", 14))
-operation_label.place(x=100+offset_param,y=400)
+operation_label.place(x=200+offset_param,y=400)
 
 radiobtn_operation_var = IntVar()
 radiobtn_operation_var.set(1)
@@ -325,7 +349,7 @@ opertions_dict = {}
 init_operations()
 keys = opertions_dict.keys()
 total_operations = len(keys)
-x_counter = 100
+x_counter = 200
 y_counter = 430
 changed_col = False
 for idx,key in enumerate(keys):
@@ -396,11 +420,11 @@ for idx,key in enumerate(keys):
 
 # ok button
 ok_btn = Button(window,text="Show",width=7,command=transform_image, bg="#5cb85c",fg="white",font="none 10 bold")
-ok_btn.place(x=310+offset_param, y=620)
+ok_btn.place(x=490+offset_param, y=620)
 
 # reset button
 reset_btn = Button(window,text="Reset",width=7,command=reset, bg="#d9534f",fg="white",font="none 10 bold")
-reset_btn.place(x=390+offset_param, y=620)
+reset_btn.place(x=570+offset_param, y=620)
 
 
 params_label = Label(window,text="Parameters",bg="white",fg="DodgerBlue",font=("Helvetica", 14))

@@ -12,7 +12,7 @@ class Scaling:
         new_height = int(img_height * fy)
         new_width = int(img_width * fx)
 
-        scaled_img = np.zeros((new_height, new_width), dtype=np.uint8)
+        scaled_img = np.zeros((new_height,new_width,3), dtype=np.uint8)
 
         for row in range(new_height):
             for col in range(new_width):
@@ -24,9 +24,10 @@ class Scaling:
                     mapped_col = img_width - 1
 
                 try:
-                    scaled_img[row, col] = image[mapped_row, mapped_col]
+                    scaled_img[row, col,:] = image[mapped_row, mapped_col,:]
                 except Exception as exp:
-                    print("Exception", mapped_row, mapped_col)
+                    #print("Exception",exp, mapped_row, mapped_col)
+                    pass
 
         image = scaled_img
 
@@ -39,7 +40,7 @@ class Scaling:
         new_height = int(img_height * fy)
         new_width = int(img_width * fx)
 
-        scaled_img = np.zeros((new_height, new_width), dtype=np.uint8)
+        scaled_img = np.zeros((new_height, new_width,3), dtype=np.uint8)
 
         interpolation_ref = interpolation()
 
@@ -62,7 +63,7 @@ class Scaling:
 
                 resultant_intensity = interpolation_ref.bilinear_interpolation(pt1, pt2, pt3, pt4, unknown)
 
-                scaled_img[row, col] = resultant_intensity
+                scaled_img[row, col,:] = resultant_intensity
 
         image = scaled_img
 
