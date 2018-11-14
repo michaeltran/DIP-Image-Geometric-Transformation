@@ -21,7 +21,7 @@ class Transformations:
         elif interpolation == 'Cubic':
             scaled_image = scaling.apply_cubic(input_image, x_factor, y_factor)
         elif interpolation == 'Lanczos4':
-            scaled_image = scaling.apply_lanczos4(input_image, x_factor, y_factor)
+            scaled_image = scaling.apply_lanczos4(input_image, y_factor, x_factor)
 
         cv2.imwrite(file_name,scaled_image)
         rows, cols = scaled_image.shape[0], scaled_image.shape[1]

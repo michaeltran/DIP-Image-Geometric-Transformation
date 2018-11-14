@@ -4,7 +4,7 @@ from tkinter import messagebox
 import tkinter.ttk as ttk
 from PIL import Image, ImageTk
 from Tranformations import Transformations
-import threading
+from time import sleep
 import cv2
 
 DEFAULT_WIDTH = 300
@@ -165,31 +165,22 @@ def remove_all_widgets():
     translate_y_entry.place_forget()
 
 
-def show_result():
-    thread_1 = threading.Thread(target=transform_image)
-    show_progressbar()
-    thread_1.start()
-
-
-def show_progressbar():
-
+def transform_image():
+    """
     global progress_canvas
 
     progress_canvas = Toplevel()
-    p_canvas = Canvas(progress_canvas, width=500, height=200,bg="white")
+    p_canvas = Canvas(progress_canvas, width=400, height=200)
     p_canvas.pack(expand=YES, fill=BOTH)
-    display = Label(p_canvas, text="Processing...", bg="white", fg="black", font=("Helvetica", 12))
-    display.place(x=215,y=70)
-    progress_bar = ttk.Progressbar(p_canvas, orient="horizontal", length=300, mode="indeterminate")
-    progress_bar.place(x=100, y=100)
+
+    progress_bar = ttk.Progressbar(p_canvas, orient="horizontal", length=200, mode="indeterminate")
+    progress_bar.place(x=100,y=100)
     progress_bar.start(50)
+    print("progress bar started")
 
-def close_progressbar():
-    print("progress bar close function")
-    progress_canvas.destroy()
+    sleep(3)
+    """
 
-def transform_image():
-    print("thread 2")
     operation_var = int(radiobtn_operation_var.get())
     operation = opertions_dict[operation_var]
     image_display_var = int(output_type_var.get())
@@ -205,10 +196,8 @@ def transform_image():
         selected_interpolation = interpolation_choice.get()
 
         if input_selected_file:
-            pass
             output_img_name, height, width= transformation_ref.scale_image(input_selected_file, x_factor, y_factor,selected_interpolation)
             place_output_image(output_img_name, height, width)
-
 
         else:
             messagebox.showerror("Error","Please select the input file")
@@ -228,7 +217,6 @@ def transform_image():
 def place_output_image(output_img_name, height, width):
     global save_img_name_ref
 
-    close_progressbar()
     #progress_canvas.destroy()
 
     output_image = Image.open(output_img_name)
@@ -244,7 +232,7 @@ def place_output_image(output_img_name, height, width):
     """
 
     output_canvas = Toplevel()
-    canvas = Canvas(output_canvas, width=width+100, height=height+100,bg="white")
+    canvas = Canvas(output_canvas, width=width+100, height=height+100)
     canvas.pack(expand=YES, fill=BOTH)
 
     save_btn = Button(canvas, text="Save",width=7, bg="#5cb85c",fg="white",command=save_img)
@@ -455,7 +443,7 @@ for idx,key in enumerate(keys):
 """
 
 # ok button
-ok_btn = Button(window,text="Show",width=7,command=show_result, bg="#5cb85c",fg="white",font="none 10 bold")
+ok_btn = Button(window,text="Show",width=7,command=transform_image, bg="#5cb85c",fg="white",font="none 10 bold")
 ok_btn.place(x=490+offset_param, y=620)
 
 # reset button
