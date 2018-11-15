@@ -50,8 +50,15 @@ class Transformations:
         file_name = "ReferenceImages/rotation.jpg"
 
         rotation = Rotation()
-        rotated_image = rotation.rotate(input_image,degrees)
 
+        if direction == "Clockwise":
+            direction = "clockwise"
+        else:
+            direction = "counterclockwise"
+
+        rotated_image = rotation.rotate(input_image, degrees, direction)
+
+        cv2.imwrite(file_name, rotated_image)
         rows, cols = rotated_image.shape[0], rotated_image.shape[1]
 
         return file_name, rows, cols

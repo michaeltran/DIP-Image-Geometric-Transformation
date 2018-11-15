@@ -184,12 +184,14 @@ def show_progressbar():
     progress_bar.place(x=100, y=100)
     progress_bar.start(50)
 
+
 def close_progressbar():
     print("progress bar close function")
     progress_canvas.destroy()
 
+
 def transform_image():
-    print("thread 2")
+    #print("thread 2")
     operation_var = int(radiobtn_operation_var.get())
     operation = opertions_dict[operation_var]
     image_display_var = int(output_type_var.get())
@@ -199,30 +201,31 @@ def transform_image():
 
     transformation_ref = Transformations()
 
+    if not input_selected_file:
+        messagebox.showerror("Error", "Please select the input file")
+        return
+
     if operation == 'Scaling':
         x_factor = float(scale_x_entry.get())
         y_factor = float(scale_y_entry.get())
         selected_interpolation = interpolation_choice.get()
 
-        if input_selected_file:
-            pass
-            output_img_name, height, width= transformation_ref.scale_image(input_selected_file, x_factor, y_factor,selected_interpolation)
-            place_output_image(output_img_name, height, width)
+        output_img_name, height, width= transformation_ref.scale_image(input_selected_file, x_factor, y_factor,selected_interpolation)
 
-
-        else:
-            messagebox.showerror("Error","Please select the input file")
 
     elif operation == "Translation":
         x_units = int(float(translate_x_entry.get()))
         y_units = int(float(translate_y_entry.get()))
 
-        if input_selected_file:
-            output_img_name, height, width= transformation_ref.translate_image(input_selected_file, x_units ,y_units)
-            place_output_image(output_img_name, height, width)
+        output_img_name, height, width= transformation_ref.translate_image(input_selected_file, x_units ,y_units)
 
-        else:
-            messagebox.showerror("Error","Please select the input file")
+    elif operation == "Rotation":
+        angle = float(degrees_entry.get())
+        direction_value = direction.get()
+        #print("angle :", angle,direction_value)
+        output_img_name, height, width = transformation_ref.rotate_image(input_selected_file, angle, direction_value)
+
+    place_output_image(output_img_name, height, width)
 
 
 def place_output_image(output_img_name, height, width):
