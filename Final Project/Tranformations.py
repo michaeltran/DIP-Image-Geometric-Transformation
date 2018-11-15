@@ -19,7 +19,7 @@ class Transformations:
         elif interpolation == 'Bilinear':
             scaled_image = scaling.apply_bilinear(input_image, x_factor, y_factor)
         elif interpolation == 'Cubic':
-            scaled_image = scaling.apply_cubic(input_image, x_factor, y_factor)
+            scaled_image = scaling.apply_cubic(input_image, y_factor, x_factor)
         elif interpolation == 'Lanczos4':
             scaled_image = scaling.apply_lanczos4(input_image, y_factor, x_factor)
 

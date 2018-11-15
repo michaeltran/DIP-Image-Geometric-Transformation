@@ -70,6 +70,60 @@ class Scaling:
         return image
 
     def apply_cubic(self, image, fx, fy):
+        w, h = image.shape[0],image.shape[1]
+
+        # shrink or expand width and height based on fx, fy values
+        nw = int(w * float(fx))
+
+        nh = int(h * float(fy))
+        Image1 = np.zeros([nw, nh,3], np.uint8)
+
+        for i in range(nw):
+            print(i)
+            for j in range(nh):
+                x = i / fx
+                y = j / fy
+
+                b = x - int(x)
+                a = y - int(y)
+
+                x0 = int(x) - 1
+                y0 = int(y) - 1
+                if (x0 < 0):
+                    x0 = 0
+                elif (x0 + 3 > w - 1):
+                    x0 = w - 4
+                if (y0 < 0):
+                    y0 = 0
+                elif (y0 + 3 > h - 1):
+                    y0 = h - 4
+                x1 = x0 + 1
+                y1 = y0 + 1
+                x2 = x0 + 2
+                y2 = y0 + 2
+                x3 = x0 + 3
+                y3 = y0 + 3
+
+                I0 = ((-1 * b) * (1 - b) ** 2) * image[x0, y0] + (1 - (2 * b ** 2) + (b ** 3)) * image[x1, y0] + (
+                        b * (1 + b - b ** 2)) * image[
+                         x2, y0] - ((b ** 2) * (1 - b) * image[x3, y0])
+                I1 = ((-1 * b) * (1 - b) ** 2) * image[x0, y1] + (1 - (2 * b ** 2) + (b ** 3)) * image[x1, y1] + (
+                        b * (1 + b - b ** 2)) * image[
+                         x2, y1] - ((b ** 2) * (1 - b) * image[x3, y1])
+                I2 = ((-1 * b) * (1 - b) ** 2) * image[x0, y2] + (1 - (2 * b ** 2) + (b ** 3)) * image[x1, y2] + (
+                        b * (1 + b - b ** 2)) * image[
+                         x2, y2] - ((b ** 2) * (1 - b) * image[x3, y2])
+                I3 = ((-1 * b) * (1 - b) ** 2) * image[x0, y3] + (1 - (2 * b ** 2) + (b ** 3)) * image[x1, y3] + (
+                        b * (1 + b - b ** 2)) * image[
+                         x2, y3] - ((b ** 2) * (1 - b) * image[x3, y3])
+
+                I = ((-1 * a) * (1 - a) ** 2) * I0 + (1 - (2 * a ** 2) + (a ** 3)) * I1 + (
+                        a * (1 + a - a ** 2)) * I2 - ((a ** 2) * (1 - a) * I3)
+
+                Image1[i, j,:] = I
+
+        image = Image1
+
         return image
 
     def apply_lanczos4(self, image, fx, fy):
