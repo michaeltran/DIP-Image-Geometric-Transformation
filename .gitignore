@@ -115,4 +115,6 @@ dmypy.json
 
 # Custom
 */Inputs/*
+!*/Inputs/.gitkeep
 */ReferenceImages/*
+!*/ReferenceImages/*/.gitkeep
