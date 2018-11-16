@@ -12,10 +12,13 @@ import numpy as np
 DEFAULT_WIDTH = 300
 DEFAULT_HEIGHT = 300
 
+normal_text = ('helvetica', 9)
+bold_text = ('helvetica', 9, 'bold')
 
 # open browser
 def open_explorer():
     global input_selected_file
+    global selected_photo
 
     open_explorer.selected_file = filedialog.askopenfilename(initialdir="./")
     input_selected_file = open_explorer.selected_file
@@ -31,10 +34,107 @@ def open_explorer():
     selected_image = Image.open(path)
     selected_image = selected_image.resize((DEFAULT_WIDTH,DEFAULT_HEIGHT))
     selected_photo = ImageTk.PhotoImage(selected_image)
-    input_photo_panel = Label(window, image=selected_photo, bg="white", relief="groove")
-    input_photo_panel.image = selected_photo
-    input_photo_panel.place(x=400+offset_param, y=50)
+
     place_image_details(open_explorer.selected_file,input_ref_img.shape)
+
+    CreatePhotoCanvas()
+
+    #input_photo_panel = Label(window, image=selected_photo, bg="white", relief="groove")
+    #input_photo_panel.image = selected_photo
+    #input_photo_panel.place(x=400+offset_param, y=50)
+    #place_image_details(open_explorer.selected_file,input_ref_img.shape)
+
+def CreatePointOnCanvas(canvas, x, y, color):
+    x1, y1 = (x - 5), (y - 5)
+    x2, y2 = (x + 5), (y + 5)
+    canvas.create_oval(x1, y1, x2, y2, fill=color)
+
+
+def click_coords(event):
+    if int(radiobtn_operation_var.get()) == 4:
+        global current_bolded_pt
+
+        if (current_bolded_pt == affine_pt1):
+            affine_pt1_x_entry.delete(0, END)
+            affine_pt1_x_entry.insert(0, event.x)
+            affine_pt1_y_entry.delete(0, END)
+            affine_pt1_y_entry.insert(0, event.y)
+            affine_pt1.config(font=normal_text)
+            affine_pt2.config(font=bold_text)
+            current_bolded_pt = affine_pt2
+        elif (current_bolded_pt == affine_pt2):
+            affine_pt2_x_entry.delete(0, END)
+            affine_pt2_x_entry.insert(0, event.x)
+            affine_pt2_y_entry.delete(0, END)
+            affine_pt2_y_entry.insert(0, event.y)
+            affine_pt2.config(font=normal_text)
+            affine_pt3.config(font=bold_text)
+            current_bolded_pt = affine_pt3
+        elif (current_bolded_pt == affine_pt3):
+            affine_pt3_x_entry.delete(0, END)
+            affine_pt3_x_entry.insert(0, event.x)
+            affine_pt3_y_entry.delete(0, END)
+            affine_pt3_y_entry.insert(0, event.y)
+            affine_pt3.config(font=normal_text)
+            affine_pt4.config(font=bold_text)
+            current_bolded_pt = affine_pt4
+        elif (current_bolded_pt == affine_pt4):
+            affine_pt4_x_entry.delete(0, END)
+            affine_pt4_x_entry.insert(0, event.x)
+            affine_pt4_y_entry.delete(0, END)
+            affine_pt4_y_entry.insert(0, event.y)
+            affine_pt4.config(font=normal_text)
+            affine_pt5.config(font=bold_text)
+            current_bolded_pt = affine_pt5
+        elif (current_bolded_pt == affine_pt5):
+            affine_pt5_x_entry.delete(0, END)
+            affine_pt5_x_entry.insert(0, event.x)
+            affine_pt5_y_entry.delete(0, END)
+            affine_pt5_y_entry.insert(0, event.y)
+            affine_pt5.config(font=normal_text)
+            affine_pt6.config(font=bold_text)
+            current_bolded_pt = affine_pt6
+        elif (current_bolded_pt == affine_pt6):
+            affine_pt6_x_entry.delete(0, END)
+            affine_pt6_x_entry.insert(0, event.x)
+            affine_pt6_y_entry.delete(0, END)
+            affine_pt6_y_entry.insert(0, event.y)
+
+
+def CreatePhotoCanvas():
+    global selected_photo
+
+    try:
+        selected_photo # does selected_photo exist in the current namespace
+    except NameError:
+        return
+
+    try:
+        input_photo_panel.delete("all")
+    except NameError:
+        gg = 1
+
+    input_photo_panel = Canvas(window, width=DEFAULT_WIDTH, height=DEFAULT_HEIGHT)
+    input_photo_panel.pack(expand=YES, fill=BOTH)
+    input_photo_panel.create_image(2, 2, image=selected_photo, anchor=NW)
+    input_photo_panel.img = selected_photo
+    input_photo_panel.place(x=400+offset_param, y=50)
+
+    if affine_pt1_x_entry.get().isdigit() and affine_pt1_y_entry.get().isdigit():
+        CreatePointOnCanvas(input_photo_panel, float(affine_pt1_x_entry.get()), float(affine_pt1_y_entry.get()), "#476042")
+    if affine_pt2_x_entry.get().isdigit() and affine_pt2_y_entry.get().isdigit():
+        CreatePointOnCanvas(input_photo_panel, float(affine_pt2_x_entry.get()), float(affine_pt2_y_entry.get()), "#476042")
+    if affine_pt3_x_entry.get().isdigit() and affine_pt3_y_entry.get().isdigit():
+        CreatePointOnCanvas(input_photo_panel, float(affine_pt3_x_entry.get()), float(affine_pt3_y_entry.get()), "#476042")
+    if affine_pt4_x_entry.get().isdigit() and affine_pt4_y_entry.get().isdigit():
+        CreatePointOnCanvas(input_photo_panel, float(affine_pt4_x_entry.get()), float(affine_pt4_y_entry.get()), "#FF0000")
+    if affine_pt5_x_entry.get().isdigit() and affine_pt5_y_entry.get().isdigit():
+        CreatePointOnCanvas(input_photo_panel, float(affine_pt5_x_entry.get()), float(affine_pt5_y_entry.get()), "#FF0000")
+    if affine_pt6_x_entry.get().isdigit() and affine_pt6_y_entry.get().isdigit():
+        CreatePointOnCanvas(input_photo_panel, float(affine_pt6_x_entry.get()), float(affine_pt6_y_entry.get()), "#FF0000")
+
+    input_photo_panel.bind("<Button 1>", click_coords)
+
 
 def place_image_details(file_path,size):
     global properties_label, img_name, img_name_val, img_ht, img_ht_val, img_wd, img_wd_val
@@ -85,7 +185,6 @@ def init_output_types():
 
 
 def create_widgets(operation_val):
-
     if operation_val == 1:
         scale_x.place(x=800+offset_param, y=427)
         scale_x_entry.place(x=900+offset_param,y=430)
@@ -136,12 +235,23 @@ def create_widgets(operation_val):
         affine_pt6_x_entry.place(x=950+offset_param, y=580)
         affine_pt6_y_entry.place(x=950+offset_param + 75, y=580)
 
+        global current_bolded_pt
+        affine_pt1.config(font=bold_text)
+        affine_pt2.config(font=normal_text)
+        affine_pt3.config(font=normal_text)
+        affine_pt4.config(font=normal_text)
+        affine_pt5.config(font=normal_text)
+        affine_pt6.config(font=normal_text)
+        current_bolded_pt = affine_pt1
+
+
 def operation_changed():
     print("Operation changed")
     value = int(radiobtn_operation_var.get())
     #print(direction.get())
     remove_all_widgets()
     create_widgets(value)
+    CreatePhotoCanvas()
 
 
 def init_widgets():
@@ -172,25 +282,73 @@ def init_widgets():
     translate_y = Label(window, text="Translate Y", bg="white")
     translate_y_entry = Entry(window, width=10, relief="ridge", bg="#F5F5F5")
 
-    affine_pt1 = Label(window, text="Original Point 1 (x, y)", bg="white")
-    affine_pt1_x_entry = Entry(window, width=10, relief="ridge", bg="#F5F5F5")
-    affine_pt1_y_entry = Entry(window, width=10, relief="ridge", bg="#F5F5F5")
-    affine_pt2 = Label(window, text="Original Point 2 (x, y)", bg="white")
-    affine_pt2_x_entry = Entry(window, width=10, relief="ridge", bg="#F5F5F5")
-    affine_pt2_y_entry = Entry(window, width=10, relief="ridge", bg="#F5F5F5")
-    affine_pt3 = Label(window, text="Original Point 3 (x, y)", bg="white")
-    affine_pt3_x_entry = Entry(window, width=10, relief="ridge", bg="#F5F5F5")
-    affine_pt3_y_entry = Entry(window, width=10, relief="ridge", bg="#F5F5F5")
-    affine_pt4 = Label(window, text="Target Point 1 (x, y)", bg="white")
-    affine_pt4_x_entry = Entry(window, width=10, relief="ridge", bg="#F5F5F5")
-    affine_pt4_y_entry = Entry(window, width=10, relief="ridge", bg="#F5F5F5")
-    affine_pt5 = Label(window, text="Target Point 2 (x, y)", bg="white")
-    affine_pt5_x_entry = Entry(window, width=10, relief="ridge", bg="#F5F5F5")
-    affine_pt5_y_entry = Entry(window, width=10, relief="ridge", bg="#F5F5F5")
-    affine_pt6 = Label(window, text="Target Point 3 (x, y)", bg="white")
-    affine_pt6_x_entry = Entry(window, width=10, relief="ridge", bg="#F5F5F5")
-    affine_pt6_y_entry = Entry(window, width=10, relief="ridge", bg="#F5F5F5")
+    def callback(sv):
+        CreatePhotoCanvas()
 
+    sv1 = StringVar()
+    sv2 = StringVar()
+    sv3 = StringVar()
+    sv4 = StringVar()
+    sv5 = StringVar()
+    sv6 = StringVar()
+    sv7 = StringVar()
+    sv8 = StringVar()
+    sv9 = StringVar()
+    sv10 = StringVar()
+    sv11 = StringVar()
+    sv12 = StringVar()
+    sv1.trace("w", lambda name, index, mode, sv=sv1: callback(sv1))
+    sv2.trace("w", lambda name, index, mode, sv=sv2: callback(sv2))
+    sv3.trace("w", lambda name, index, mode, sv=sv3: callback(sv3))
+    sv4.trace("w", lambda name, index, mode, sv=sv4: callback(sv4))
+    sv5.trace("w", lambda name, index, mode, sv=sv5: callback(sv5))
+    sv6.trace("w", lambda name, index, mode, sv=sv6: callback(sv6))
+    sv7.trace("w", lambda name, index, mode, sv=sv7: callback(sv7))
+    sv8.trace("w", lambda name, index, mode, sv=sv8: callback(sv8))
+    sv9.trace("w", lambda name, index, mode, sv=sv9: callback(sv9))
+    sv10.trace("w", lambda name, index, mode, sv=sv10: callback(sv10))
+    sv11.trace("w", lambda name, index, mode, sv=sv11: callback(sv11))
+    sv12.trace("w", lambda name, index, mode, sv=sv12: callback(sv12))
+
+    affine_pt1 = Label(window, text="Original Point 1 (x, y)", bg="white", font=('helvetica', 9))
+    affine_pt1_x_entry = Entry(window, width=10, relief="ridge", bg="#F5F5F5", textvariable=sv1)
+    affine_pt1_y_entry = Entry(window, width=10, relief="ridge", bg="#F5F5F5", textvariable=sv2)
+    affine_pt2 = Label(window, text="Original Point 2 (x, y)", bg="white", font=('helvetica', 9))
+    affine_pt2_x_entry = Entry(window, width=10, relief="ridge", bg="#F5F5F5", textvariable=sv3)
+    affine_pt2_y_entry = Entry(window, width=10, relief="ridge", bg="#F5F5F5", textvariable=sv4)
+    affine_pt3 = Label(window, text="Original Point 3 (x, y)", bg="white", font=('helvetica', 9))
+    affine_pt3_x_entry = Entry(window, width=10, relief="ridge", bg="#F5F5F5", textvariable=sv5)
+    affine_pt3_y_entry = Entry(window, width=10, relief="ridge", bg="#F5F5F5", textvariable=sv6)
+    affine_pt4 = Label(window, text="Target Point 1 (x, y)", bg="white", font=('helvetica', 9))
+    affine_pt4_x_entry = Entry(window, width=10, relief="ridge", bg="#F5F5F5", textvariable=sv7)
+    affine_pt4_y_entry = Entry(window, width=10, relief="ridge", bg="#F5F5F5", textvariable=sv8)
+    affine_pt5 = Label(window, text="Target Point 2 (x, y)", bg="white", font=('helvetica', 9))
+    affine_pt5_x_entry = Entry(window, width=10, relief="ridge", bg="#F5F5F5", textvariable=sv9)
+    affine_pt5_y_entry = Entry(window, width=10, relief="ridge", bg="#F5F5F5", textvariable=sv10)
+    affine_pt6 = Label(window, text="Target Point 3 (x, y)", bg="white", font=('helvetica', 9))
+    affine_pt6_x_entry = Entry(window, width=10, relief="ridge", bg="#F5F5F5", textvariable=sv11)
+    affine_pt6_y_entry = Entry(window, width=10, relief="ridge", bg="#F5F5F5", textvariable=sv12)
+
+    global current_bolded_pt
+    affine_pt1.config(font=bold_text)
+    current_bolded_pt = affine_pt1
+
+    affine_pt1.bind("<Button-1>", lambda event : SelectAffineLabel(event, affine_pt1))
+    affine_pt2.bind("<Button-1>", lambda event : SelectAffineLabel(event, affine_pt2))
+    affine_pt3.bind("<Button-1>", lambda event : SelectAffineLabel(event, affine_pt3))
+    affine_pt4.bind("<Button-1>", lambda event : SelectAffineLabel(event, affine_pt4))
+    affine_pt5.bind("<Button-1>", lambda event : SelectAffineLabel(event, affine_pt5))
+    affine_pt6.bind("<Button-1>", lambda event : SelectAffineLabel(event, affine_pt6))
+
+
+def SelectAffineLabel(event, pt):
+    global current_bolded_pt
+    if current_bolded_pt == pt:
+        pass
+    else:
+        current_bolded_pt.config(font=normal_text)
+        pt.config(font=bold_text)
+        current_bolded_pt = pt
 
 def remove_all_widgets():
     scale_x.place_forget()
@@ -388,8 +546,14 @@ def init_default_input():
     input_image = input_image.resize((DEFAULT_WIDTH, DEFAULT_HEIGHT), Image.ANTIALIAS)
     input_photo = ImageTk.PhotoImage(input_image)
 
-    input_photo_panel = Label(window, image=input_photo, bg="white", relief="groove")
-    input_photo_panel.image = input_photo
+    input_photo_panel = Canvas(window, width=DEFAULT_WIDTH, height=DEFAULT_HEIGHT,bg="white")
+    input_photo_panel.pack(expand=YES, fill=BOTH)
+    input_photo_panel.create_image(2, 2, image=input_photo, anchor=NW)
+    input_photo_panel.img = input_photo
+
+    #input_photo_panel = Label(window, image=input_photo, bg="white", relief="groove")
+    #input_photo_panel.image = input_photo
+    #input_photo_panel.place(x=400 + offset_param, y=50)
     input_photo_panel.place(x=400 + offset_param, y=50)
 
 window = Tk()
