@@ -84,8 +84,22 @@ class Affine:
 
     def warpAffine(self, img, M, image_size_factor_x, image_size_factor_y):
         rows, cols, ch = img.shape
-        result_image = np.zeros(shape=(int(rows * image_size_factor_y), int(cols * image_size_factor_x), ch))
-        #img_size = np.zeros(shape=(rows, cols, ch))
+
+        ## SHEAR RESIZING
+        real_image_size_factor_x = image_size_factor_x
+        real_image_size_factor_y = image_size_factor_y
+        x_shift = 0
+        y_shift = 0
+
+        if (image_size_factor_x < 1):
+            real_image_size_factor_x = 2 - image_size_factor_x
+            x_shift = int((real_image_size_factor_x - 1) * rows)
+        if (image_size_factor_y < 1):
+            real_image_size_factor_y = 2 - image_size_factor_y
+            y_shift = int((real_image_size_factor_y - 1) * cols)
+        ## END SHEAR RESIZING
+
+        result_image = np.zeros(shape=(int(rows * real_image_size_factor_y), int(cols * real_image_size_factor_x), ch))
 
         def GetBilinearPixel(image, posX, posY):
             interpolation_ref = interpolation()
@@ -126,8 +140,8 @@ class Affine:
         M = np.append(M, [[0,0,1]],axis = 0) 
         inverse = np.linalg.inv(M)
 
-        for x_prime in range(0, int(img.shape[0] * image_size_factor_x)):
-            for y_prime in range(0, int(img.shape[1] * image_size_factor_y)):
+        for x_prime in range(0 - x_shift, int(img.shape[0] * real_image_size_factor_x) - x_shift):
+            for y_prime in range(0 - y_shift, int(img.shape[1] * real_image_size_factor_y) - y_shift):
                 pos = np.array([[x_prime],[y_prime],[1]], np.float32)
                 pos = np.matmul(inverse, pos)
 
@@ -135,6 +149,6 @@ class Affine:
                 y = pos[1][0]
 
                 if (x <= rows - 1 and x >= 0 and y <= cols - 1 and y >= 0):
-                    result_image[y_prime][x_prime] += GetBilinearPixel(img, x, y)
+                    result_image[y_prime + y_shift][x_prime + x_shift] += GetBilinearPixel(img, x, y)
 
         return result_image
