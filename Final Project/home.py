@@ -65,7 +65,7 @@ def CreateMainPointOnCanvas(canvas, x, y, color, label):
 
 
 def click_coords(event):
-    if int(radiobtn_operation_var.get()) == 4:
+    if operations_dict[int(radiobtn_operation_var.get())] == 'Affine Transformation':
         global current_bolded_pt
 
         if (current_bolded_pt == affine_pt1):
@@ -198,12 +198,13 @@ def place_image_details(file_path,size):
 
 
 def init_operations():
-    opertions_dict[1] = "Scaling"
-    opertions_dict[2] = "Rotation"
-    opertions_dict[3] = "Translation"
-    opertions_dict[4] = "Affine Tranformation"
-    opertions_dict[5] = "Polar Tranformation"
-    opertions_dict[6] = "Log Polar Tranformation"
+    operations_dict[1] = "Scaling"
+    operations_dict[2] = "Rotation"
+    operations_dict[3] = "Translation"
+    operations_dict[4] = "Shear"
+    operations_dict[5] = "Affine Transformation"
+    operations_dict[6] = "Polar Tranformation"
+    operations_dict[7] = "Log Polar Tranformation"
 
 """
 def init_interpolations():
@@ -245,6 +246,14 @@ def create_widgets(operation_val):
         translate_y_entry.insert(0, "0")
 
     elif operation_val == 4:
+        shear_x.place(x=800+offset_param, y=427)
+        shear_x_entry.place(x=900+offset_param,y=430)
+        shear_x_entry.insert(0,"0")
+        shear_y.place(x=800+offset_param, y=457)
+        shear_y_entry.place(x=900+offset_param,y=460)
+        shear_y_entry.insert(0,"0")
+
+    elif operation_val == 5:
         affine_pt1.place(x=800+offset_param, y=427)
         affine_pt1_x_entry.place(x=950+offset_param, y=430)
         affine_pt1_y_entry.place(x=950+offset_param + 75, y=430)
@@ -292,6 +301,7 @@ def init_widgets():
     global scale_x, scale_x_entry, scale_y, scale_y_entry,interpolation_label,interpolations_popup
     global degrees, degrees_entry, direction_label,popupMenu
     global translate_x, translate_x_entry, translate_y, translate_y_entry
+    global shear_x, shear_x_entry, shear_y, shear_y_entry
     global affine_pt1, affine_pt1_x_entry, affine_pt1_y_entry
     global affine_pt2, affine_pt2_x_entry, affine_pt2_y_entry
     global affine_pt3, affine_pt3_x_entry, affine_pt3_y_entry
@@ -316,7 +326,12 @@ def init_widgets():
     translate_y = Label(window, text="Translate Y", bg="white")
     translate_y_entry = Entry(window, width=10, relief="ridge", bg="#F5F5F5")
 
-    def callback(sv):
+    shear_x = Label(window, text="Shear X", bg="white")
+    shear_x_entry = Entry(window, width=10, relief="ridge", bg="#F5F5F5")
+    shear_y = Label(window, text="Shear Y", bg="white")
+    shear_y_entry = Entry(window, width=10, relief="ridge", bg="#F5F5F5") 
+
+    def PhotoCanvasCallback(sv):
         CreatePhotoCanvas()
 
     sv1 = StringVar()
@@ -331,18 +346,18 @@ def init_widgets():
     sv10 = StringVar()
     sv11 = StringVar()
     sv12 = StringVar()
-    sv1.trace("w", lambda name, index, mode, sv=sv1: callback(sv1))
-    sv2.trace("w", lambda name, index, mode, sv=sv2: callback(sv2))
-    sv3.trace("w", lambda name, index, mode, sv=sv3: callback(sv3))
-    sv4.trace("w", lambda name, index, mode, sv=sv4: callback(sv4))
-    sv5.trace("w", lambda name, index, mode, sv=sv5: callback(sv5))
-    sv6.trace("w", lambda name, index, mode, sv=sv6: callback(sv6))
-    sv7.trace("w", lambda name, index, mode, sv=sv7: callback(sv7))
-    sv8.trace("w", lambda name, index, mode, sv=sv8: callback(sv8))
-    sv9.trace("w", lambda name, index, mode, sv=sv9: callback(sv9))
-    sv10.trace("w", lambda name, index, mode, sv=sv10: callback(sv10))
-    sv11.trace("w", lambda name, index, mode, sv=sv11: callback(sv11))
-    sv12.trace("w", lambda name, index, mode, sv=sv12: callback(sv12))
+    sv1.trace("w", lambda name, index, mode, sv=sv1: PhotoCanvasCallback(sv1))
+    sv2.trace("w", lambda name, index, mode, sv=sv2: PhotoCanvasCallback(sv2))
+    sv3.trace("w", lambda name, index, mode, sv=sv3: PhotoCanvasCallback(sv3))
+    sv4.trace("w", lambda name, index, mode, sv=sv4: PhotoCanvasCallback(sv4))
+    sv5.trace("w", lambda name, index, mode, sv=sv5: PhotoCanvasCallback(sv5))
+    sv6.trace("w", lambda name, index, mode, sv=sv6: PhotoCanvasCallback(sv6))
+    sv7.trace("w", lambda name, index, mode, sv=sv7: PhotoCanvasCallback(sv7))
+    sv8.trace("w", lambda name, index, mode, sv=sv8: PhotoCanvasCallback(sv8))
+    sv9.trace("w", lambda name, index, mode, sv=sv9: PhotoCanvasCallback(sv9))
+    sv10.trace("w", lambda name, index, mode, sv=sv10: PhotoCanvasCallback(sv10))
+    sv11.trace("w", lambda name, index, mode, sv=sv11: PhotoCanvasCallback(sv11))
+    sv12.trace("w", lambda name, index, mode, sv=sv12: PhotoCanvasCallback(sv12))
 
     affine_pt1 = Label(window, text="Original Point 1 (x, y)", bg="white", font=('helvetica', 9))
     affine_pt1_x_entry = Entry(window, width=10, relief="ridge", bg="#F5F5F5", textvariable=sv1)
@@ -409,6 +424,13 @@ def remove_all_widgets():
     translate_y_entry.delete(0, 'end')
     translate_y_entry.place_forget()
 
+    shear_x.place_forget()
+    shear_x_entry.delete(0, 'end')
+    shear_x_entry.place_forget()
+    shear_y.place_forget()
+    shear_y_entry.delete(0, 'end')
+    shear_y_entry.place_forget()
+
     affine_pt1.place_forget()
     affine_pt1_x_entry.delete(0, 'end')
     affine_pt1_x_entry.place_forget()
@@ -469,7 +491,7 @@ def close_progressbar():
 def transform_image():
     #print("thread 2")
     operation_var = int(radiobtn_operation_var.get())
-    operation = opertions_dict[operation_var]
+    operation = operations_dict[operation_var]
     image_display_var = int(output_type_var.get())
     show_full_image = False
     if image_display_var == 2000:
@@ -502,7 +524,13 @@ def transform_image():
         #print("angle :", angle,direction_value)
         output_img_name, height, width = transformation_ref.rotate_image(input_selected_file, angle, direction_value)
 
-    elif operation == "Affine Tranformation":
+    elif operation == "Shear":
+        shear_x_value = float(shear_x_entry.get())
+        shear_y_value = float(shear_y_entry.get())
+
+        output_img_name, height, width = affine_ref.shear_transform(input_selected_file, shear_x_value, shear_y_value)
+
+    elif operation == "Affine Transformation":
         pts1 = np.float32([[float(affine_pt1_x_entry.get()) * resize_factor_x, float(affine_pt1_y_entry.get()) * resize_factor_y], 
                            [float(affine_pt2_x_entry.get()) * resize_factor_x, float(affine_pt2_y_entry.get()) * resize_factor_y],
                            [float(affine_pt3_x_entry.get()) * resize_factor_x, float(affine_pt3_y_entry.get()) * resize_factor_y]])
@@ -677,16 +705,16 @@ operation_label.place(x=200+offset_param,y=400)
 radiobtn_operation_var = IntVar()
 radiobtn_operation_var.set(1)
 
-opertions_dict = {}
+operations_dict = {}
 init_operations()
-keys = opertions_dict.keys()
+keys = operations_dict.keys()
 total_operations = len(keys)
 x_counter = 200
 y_counter = 430
 changed_col = False
 for idx,key in enumerate(keys):
     option = Radiobutton(window,
-                text=opertions_dict[key],
+                text=operations_dict[key],
                 padx=20,
                 command=operation_changed,
                 variable=radiobtn_operation_var,
