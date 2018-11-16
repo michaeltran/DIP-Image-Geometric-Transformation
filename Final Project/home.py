@@ -32,6 +32,12 @@ def open_explorer():
     input_ref_img = cv2.imread(input_selected_file)
     cv2.imwrite(path,input_ref_img)
     selected_image = Image.open(path)
+
+    global resize_factor_x
+    global resize_factor_y
+    resize_factor_x = selected_image.size[0] / DEFAULT_WIDTH
+    resize_factor_y = selected_image.size[1] / DEFAULT_HEIGHT
+
     selected_image = selected_image.resize((DEFAULT_WIDTH,DEFAULT_HEIGHT))
     selected_photo = ImageTk.PhotoImage(selected_image)
 
@@ -497,12 +503,12 @@ def transform_image():
         output_img_name, height, width = transformation_ref.rotate_image(input_selected_file, angle, direction_value)
 
     elif operation == "Affine Tranformation":
-        pts1 = np.float32([[float(affine_pt1_x_entry.get()), float(affine_pt1_y_entry.get())], 
-                           [float(affine_pt2_x_entry.get()), float(affine_pt2_y_entry.get())],
-                           [float(affine_pt3_x_entry.get()), float(affine_pt3_y_entry.get())]])
-        pts2 = np.float32([[float(affine_pt4_x_entry.get()), float(affine_pt4_y_entry.get())],
-                           [float(affine_pt5_x_entry.get()), float(affine_pt5_y_entry.get())],
-                           [float(affine_pt6_x_entry.get()), float(affine_pt6_y_entry.get())]])
+        pts1 = np.float32([[float(affine_pt1_x_entry.get()) * resize_factor_x, float(affine_pt1_y_entry.get()) * resize_factor_y], 
+                           [float(affine_pt2_x_entry.get()) * resize_factor_x, float(affine_pt2_y_entry.get()) * resize_factor_y],
+                           [float(affine_pt3_x_entry.get()) * resize_factor_x, float(affine_pt3_y_entry.get()) * resize_factor_y]])
+        pts2 = np.float32([[float(affine_pt4_x_entry.get()) * resize_factor_x, float(affine_pt4_y_entry.get()) * resize_factor_y],
+                           [float(affine_pt5_x_entry.get()) * resize_factor_x, float(affine_pt5_y_entry.get()) * resize_factor_y],
+                           [float(affine_pt6_x_entry.get()) * resize_factor_x, float(affine_pt6_y_entry.get()) * resize_factor_y]])
 
         output_img_name, height, width = affine_ref.affine_transform(input_selected_file, pts1, pts2)
 
