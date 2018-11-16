@@ -4,8 +4,10 @@ from tkinter import messagebox
 import tkinter.ttk as ttk
 from PIL import Image, ImageTk
 from Tranformations import Transformations
+from Affine import Affine
 import threading
 import cv2
+import numpy as np
 
 DEFAULT_WIDTH = 300
 DEFAULT_HEIGHT = 300
@@ -109,6 +111,30 @@ def create_widgets(operation_val):
         translate_y_entry.place(x=900+offset_param, y=460)
         translate_y_entry.insert(0, "0")
 
+    elif operation_val == 4:
+        affine_pt1.place(x=800+offset_param, y=427)
+        affine_pt1_x_entry.place(x=950+offset_param, y=430)
+        affine_pt1_y_entry.place(x=950+offset_param + 75, y=430)
+
+        affine_pt2.place(x=800+offset_param, y=457)
+        affine_pt2_x_entry.place(x=950+offset_param, y=460)
+        affine_pt2_y_entry.place(x=950+offset_param + 75, y=460)
+
+        affine_pt3.place(x=800+offset_param, y=487)
+        affine_pt3_x_entry.place(x=950+offset_param, y=490)
+        affine_pt3_y_entry.place(x=950+offset_param + 75, y=490)
+
+        affine_pt4.place(x=800+offset_param, y=517)
+        affine_pt4_x_entry.place(x=950+offset_param, y=520)
+        affine_pt4_y_entry.place(x=950+offset_param + 75, y=520)
+
+        affine_pt5.place(x=800+offset_param, y=547)
+        affine_pt5_x_entry.place(x=950+offset_param, y=550)
+        affine_pt5_y_entry.place(x=950+offset_param + 75, y=550)
+
+        affine_pt6.place(x=800+offset_param, y=577)
+        affine_pt6_x_entry.place(x=950+offset_param, y=580)
+        affine_pt6_y_entry.place(x=950+offset_param + 75, y=580)
 
 def operation_changed():
     print("Operation changed")
@@ -122,6 +148,12 @@ def init_widgets():
     global scale_x, scale_x_entry, scale_y, scale_y_entry,interpolation_label,interpolations_popup
     global degrees, degrees_entry, direction_label,popupMenu
     global translate_x, translate_x_entry, translate_y, translate_y_entry
+    global affine_pt1, affine_pt1_x_entry, affine_pt1_y_entry
+    global affine_pt2, affine_pt2_x_entry, affine_pt2_y_entry
+    global affine_pt3, affine_pt3_x_entry, affine_pt3_y_entry
+    global affine_pt4, affine_pt4_x_entry, affine_pt4_y_entry
+    global affine_pt5, affine_pt5_x_entry, affine_pt5_y_entry
+    global affine_pt6, affine_pt6_x_entry, affine_pt6_y_entry
 
     scale_x = Label(window, text="Scale X Factor", bg="white")
     scale_x_entry = Entry(window, width=10, relief="ridge", bg="#F5F5F5")
@@ -139,6 +171,25 @@ def init_widgets():
     translate_x_entry = Entry(window, width=10, relief="ridge", bg="#F5F5F5")
     translate_y = Label(window, text="Translate Y", bg="white")
     translate_y_entry = Entry(window, width=10, relief="ridge", bg="#F5F5F5")
+
+    affine_pt1 = Label(window, text="Original Point 1 (x, y)", bg="white")
+    affine_pt1_x_entry = Entry(window, width=10, relief="ridge", bg="#F5F5F5")
+    affine_pt1_y_entry = Entry(window, width=10, relief="ridge", bg="#F5F5F5")
+    affine_pt2 = Label(window, text="Original Point 2 (x, y)", bg="white")
+    affine_pt2_x_entry = Entry(window, width=10, relief="ridge", bg="#F5F5F5")
+    affine_pt2_y_entry = Entry(window, width=10, relief="ridge", bg="#F5F5F5")
+    affine_pt3 = Label(window, text="Original Point 3 (x, y)", bg="white")
+    affine_pt3_x_entry = Entry(window, width=10, relief="ridge", bg="#F5F5F5")
+    affine_pt3_y_entry = Entry(window, width=10, relief="ridge", bg="#F5F5F5")
+    affine_pt4 = Label(window, text="Target Point 1 (x, y)", bg="white")
+    affine_pt4_x_entry = Entry(window, width=10, relief="ridge", bg="#F5F5F5")
+    affine_pt4_y_entry = Entry(window, width=10, relief="ridge", bg="#F5F5F5")
+    affine_pt5 = Label(window, text="Target Point 2 (x, y)", bg="white")
+    affine_pt5_x_entry = Entry(window, width=10, relief="ridge", bg="#F5F5F5")
+    affine_pt5_y_entry = Entry(window, width=10, relief="ridge", bg="#F5F5F5")
+    affine_pt6 = Label(window, text="Target Point 3 (x, y)", bg="white")
+    affine_pt6_x_entry = Entry(window, width=10, relief="ridge", bg="#F5F5F5")
+    affine_pt6_y_entry = Entry(window, width=10, relief="ridge", bg="#F5F5F5")
 
 
 def remove_all_widgets():
@@ -163,6 +214,37 @@ def remove_all_widgets():
     translate_y.place_forget()
     translate_y_entry.delete(0, 'end')
     translate_y_entry.place_forget()
+
+    affine_pt1.place_forget()
+    affine_pt1_x_entry.delete(0, 'end')
+    affine_pt1_x_entry.place_forget()
+    affine_pt1_y_entry.delete(0, 'end')
+    affine_pt1_y_entry.place_forget()
+    affine_pt2.place_forget()
+    affine_pt2_x_entry.delete(0, 'end')
+    affine_pt2_x_entry.place_forget()
+    affine_pt2_y_entry.delete(0, 'end')
+    affine_pt2_y_entry.place_forget()
+    affine_pt3.place_forget()
+    affine_pt3_x_entry.delete(0, 'end')
+    affine_pt3_x_entry.place_forget()
+    affine_pt3_y_entry.delete(0, 'end')
+    affine_pt3_y_entry.place_forget()
+    affine_pt4.place_forget()
+    affine_pt4_x_entry.delete(0, 'end')
+    affine_pt4_x_entry.place_forget()
+    affine_pt4_y_entry.delete(0, 'end')
+    affine_pt4_y_entry.place_forget()
+    affine_pt5.place_forget()
+    affine_pt5_x_entry.delete(0, 'end')
+    affine_pt5_x_entry.place_forget()
+    affine_pt5_y_entry.delete(0, 'end')
+    affine_pt5_y_entry.place_forget()
+    affine_pt6.place_forget()
+    affine_pt6_x_entry.delete(0, 'end')
+    affine_pt6_x_entry.place_forget()
+    affine_pt6_y_entry.delete(0, 'end')
+    affine_pt6_y_entry.place_forget()
 
 
 def show_result():
@@ -200,6 +282,7 @@ def transform_image():
         show_full_image = True
 
     transformation_ref = Transformations()
+    affine_ref = Affine()
 
     if not input_selected_file:
         messagebox.showerror("Error", "Please select the input file")
@@ -224,6 +307,16 @@ def transform_image():
         direction_value = direction.get()
         #print("angle :", angle,direction_value)
         output_img_name, height, width = transformation_ref.rotate_image(input_selected_file, angle, direction_value)
+
+    elif operation == "Affine Tranformation":
+        pts1 = np.float32([[float(affine_pt1_x_entry.get()), float(affine_pt1_y_entry.get())], 
+                           [float(affine_pt2_x_entry.get()), float(affine_pt2_y_entry.get())],
+                           [float(affine_pt3_x_entry.get()), float(affine_pt3_y_entry.get())]])
+        pts2 = np.float32([[float(affine_pt4_x_entry.get()), float(affine_pt4_y_entry.get())],
+                           [float(affine_pt5_x_entry.get()), float(affine_pt5_y_entry.get())],
+                           [float(affine_pt6_x_entry.get()), float(affine_pt6_y_entry.get())]])
+
+        output_img_name, height, width = affine_ref.affine_transform(input_selected_file, pts1, pts2)
 
     place_output_image(output_img_name, height, width)
 
@@ -302,7 +395,7 @@ def init_default_input():
 window = Tk()
 
 #size of the window
-window.geometry("1000x500")
+window.geometry("1200x700")
 window.title("Image Geometric Transformations")
 window.configure(background="white")
 offset_param = 0

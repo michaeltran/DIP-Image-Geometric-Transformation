@@ -32,6 +32,9 @@
     <Content Include="translate_test.png" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Affine.py">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="home.py" />
     <Compile Include="Interpolation.py" />
     <Compile Include="log_polar.py" />
