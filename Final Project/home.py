@@ -44,10 +44,18 @@ def open_explorer():
     #input_photo_panel.place(x=400+offset_param, y=50)
     #place_image_details(open_explorer.selected_file,input_ref_img.shape)
 
-def CreatePointOnCanvas(canvas, x, y, color):
-    x1, y1 = (x - 5), (y - 5)
-    x2, y2 = (x + 5), (y + 5)
+
+def CreatePointOnCanvas(canvas, x, y, color, label):
+    x1, y1 = (x - 10), (y - 10)
+    x2, y2 = (x + 10), (y + 10)
     canvas.create_oval(x1, y1, x2, y2, fill=color)
+    canvas.create_text(x, y, text=label)
+
+def CreateMainPointOnCanvas(canvas, x, y, color, label):
+    x1, y1 = (x - 10), (y - 10)
+    x2, y2 = (x + 10), (y + 10)
+    canvas.create_oval(x1, y1, x2, y2, fill=color)
+    canvas.create_text(x, y, text=label, font=('helvetica', 12, 'bold'))
 
 
 def click_coords(event):
@@ -100,6 +108,8 @@ def click_coords(event):
             affine_pt6_y_entry.delete(0, END)
             affine_pt6_y_entry.insert(0, event.y)
 
+        CreatePhotoCanvas()
+
 
 def CreatePhotoCanvas():
     global selected_photo
@@ -112,7 +122,7 @@ def CreatePhotoCanvas():
     try:
         input_photo_panel.delete("all")
     except NameError:
-        gg = 1
+        temp = 1
 
     input_photo_panel = Canvas(window, width=DEFAULT_WIDTH, height=DEFAULT_HEIGHT)
     input_photo_panel.pack(expand=YES, fill=BOTH)
@@ -121,17 +131,35 @@ def CreatePhotoCanvas():
     input_photo_panel.place(x=400+offset_param, y=50)
 
     if affine_pt1_x_entry.get().isdigit() and affine_pt1_y_entry.get().isdigit():
-        CreatePointOnCanvas(input_photo_panel, float(affine_pt1_x_entry.get()), float(affine_pt1_y_entry.get()), "#476042")
+        if current_bolded_pt == affine_pt1:
+            CreateMainPointOnCanvas(input_photo_panel, float(affine_pt1_x_entry.get()), float(affine_pt1_y_entry.get()), "#476042", '1')
+        else:
+            CreatePointOnCanvas(input_photo_panel, float(affine_pt1_x_entry.get()), float(affine_pt1_y_entry.get()), "#476042", '1')
     if affine_pt2_x_entry.get().isdigit() and affine_pt2_y_entry.get().isdigit():
-        CreatePointOnCanvas(input_photo_panel, float(affine_pt2_x_entry.get()), float(affine_pt2_y_entry.get()), "#476042")
+        if current_bolded_pt == affine_pt2:
+            CreateMainPointOnCanvas(input_photo_panel, float(affine_pt2_x_entry.get()), float(affine_pt2_y_entry.get()), "#476042", '2')
+        else:
+            CreatePointOnCanvas(input_photo_panel, float(affine_pt2_x_entry.get()), float(affine_pt2_y_entry.get()), "#476042", '2')
     if affine_pt3_x_entry.get().isdigit() and affine_pt3_y_entry.get().isdigit():
-        CreatePointOnCanvas(input_photo_panel, float(affine_pt3_x_entry.get()), float(affine_pt3_y_entry.get()), "#476042")
+        if current_bolded_pt == affine_pt3:
+            CreateMainPointOnCanvas(input_photo_panel, float(affine_pt3_x_entry.get()), float(affine_pt3_y_entry.get()), "#476042", '3')
+        else:
+            CreatePointOnCanvas(input_photo_panel, float(affine_pt3_x_entry.get()), float(affine_pt3_y_entry.get()), "#476042", '3')
     if affine_pt4_x_entry.get().isdigit() and affine_pt4_y_entry.get().isdigit():
-        CreatePointOnCanvas(input_photo_panel, float(affine_pt4_x_entry.get()), float(affine_pt4_y_entry.get()), "#FF0000")
+        if current_bolded_pt == affine_pt4:
+            CreateMainPointOnCanvas(input_photo_panel, float(affine_pt4_x_entry.get()), float(affine_pt4_y_entry.get()), "#FF0000", '1')
+        else:
+            CreatePointOnCanvas(input_photo_panel, float(affine_pt4_x_entry.get()), float(affine_pt4_y_entry.get()), "#FF0000", '1')
     if affine_pt5_x_entry.get().isdigit() and affine_pt5_y_entry.get().isdigit():
-        CreatePointOnCanvas(input_photo_panel, float(affine_pt5_x_entry.get()), float(affine_pt5_y_entry.get()), "#FF0000")
+        if current_bolded_pt == affine_pt5:
+            CreateMainPointOnCanvas(input_photo_panel, float(affine_pt5_x_entry.get()), float(affine_pt5_y_entry.get()), "#FF0000", '2')
+        else:
+            CreatePointOnCanvas(input_photo_panel, float(affine_pt5_x_entry.get()), float(affine_pt5_y_entry.get()), "#FF0000", '2')
     if affine_pt6_x_entry.get().isdigit() and affine_pt6_y_entry.get().isdigit():
-        CreatePointOnCanvas(input_photo_panel, float(affine_pt6_x_entry.get()), float(affine_pt6_y_entry.get()), "#FF0000")
+        if current_bolded_pt == affine_pt6:
+            CreateMainPointOnCanvas(input_photo_panel, float(affine_pt6_x_entry.get()), float(affine_pt6_y_entry.get()), "#FF0000", '3')
+        else:
+            CreatePointOnCanvas(input_photo_panel, float(affine_pt6_x_entry.get()), float(affine_pt6_y_entry.get()), "#FF0000", '3')
 
     input_photo_panel.bind("<Button 1>", click_coords)
 
@@ -349,6 +377,8 @@ def SelectAffineLabel(event, pt):
         current_bolded_pt.config(font=normal_text)
         pt.config(font=bold_text)
         current_bolded_pt = pt
+
+    CreatePhotoCanvas()
 
 def remove_all_widgets():
     scale_x.place_forget()
