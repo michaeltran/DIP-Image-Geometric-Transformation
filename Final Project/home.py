@@ -119,6 +119,7 @@ def click_coords(event):
 
 def CreatePhotoCanvas():
     global selected_photo
+    global input_photo_panel
 
     try:
         selected_photo # does selected_photo exist in the current namespace
@@ -203,8 +204,8 @@ def init_operations():
     operations_dict[3] = "Translation"
     operations_dict[4] = "Shear"
     operations_dict[5] = "Affine Transformation"
-    operations_dict[6] = "Polar Tranformation"
-    operations_dict[7] = "Log Polar Tranformation"
+    operations_dict[6] = "Polar Transformation"
+    operations_dict[7] = "Log Polar Transformation"
 
 """
 def init_interpolations():
@@ -287,6 +288,16 @@ def create_widgets(operation_val):
         affine_pt6.config(font=normal_text)
         current_bolded_pt = affine_pt1
 
+    elif operation_val == 6 or operation_val == 7:
+        center.place(x=800 + offset_param,y=427)
+        center_x_entry.place(x=950+offset_param,y=430)
+        center_x_entry.insert(0,"0")
+        center_y_entry.place(x=950+offset_param+75,y=430)
+        center_y_entry.insert(0, "0")
+        radius.place(x=800+offset_param,y=457)
+        radius_entry.place(x=950+offset_param,y=460)
+        radius_entry.insert(0, "0")
+
 
 def operation_changed():
     print("Operation changed")
@@ -308,6 +319,8 @@ def init_widgets():
     global affine_pt4, affine_pt4_x_entry, affine_pt4_y_entry
     global affine_pt5, affine_pt5_x_entry, affine_pt5_y_entry
     global affine_pt6, affine_pt6_x_entry, affine_pt6_y_entry
+    global center, center_x_entry, center_y_entry, radius, radius_entry
+
 
     scale_x = Label(window, text="Scale X Factor", bg="white")
     scale_x_entry = Entry(window, width=10, relief="ridge", bg="#F5F5F5")
@@ -389,6 +402,15 @@ def init_widgets():
     affine_pt5.bind("<Button-1>", lambda event : SelectAffineLabel(event, affine_pt5))
     affine_pt6.bind("<Button-1>", lambda event : SelectAffineLabel(event, affine_pt6))
 
+    shear_x = Label(window, text="Shear X", bg="white")
+    shear_x_entry = Entry(window, width=10, relief="ridge", bg="#F5F5F5")
+
+    center = Label(window, text="Center (x,y)", bg="white")
+    center_x_entry = Entry(window, width=10, relief="ridge", bg="#F5F5F5")
+    center_y_entry = Entry(window, width=10, relief="ridge", bg="#F5F5F5")
+    radius = Label(window, text="Radius", bg="white")
+    radius_entry = Entry(window, width=10, relief="ridge", bg="#F5F5F5")
+
 
 def SelectAffineLabel(event, pt):
     global current_bolded_pt
@@ -462,6 +484,15 @@ def remove_all_widgets():
     affine_pt6_y_entry.delete(0, 'end')
     affine_pt6_y_entry.place_forget()
 
+    center.place_forget()
+    center_x_entry.place_forget()
+    center_x_entry.delete(0, "end")
+    center_y_entry.place_forget()
+    center_y_entry.delete(0, "end")
+    radius.place_forget()
+    radius_entry.place_forget()
+    radius_entry.delete(0, "end")
+
 
 def show_result():
     thread_1 = threading.Thread(target=transform_image)
@@ -487,11 +518,26 @@ def close_progressbar():
     print("progress bar close function")
     progress_canvas.destroy()
 
+#checks inputs for polar and log polar
+def get_and_check_inputs_polar_and_log_polar():
+    x_c = int(float(center_x_entry.get()))
+    y_c = int(float(center_y_entry.get()))
+    r = int(float(radius_entry.get()))
+
+    if x_c == 0:
+        x_c = None
+    if y_c == 0:
+        y_c = None
+    if r == 0:
+        r = None
+
+    return x_c, y_c, r
 
 def transform_image():
     #print("thread 2")
     operation_var = int(radiobtn_operation_var.get())
     operation = operations_dict[operation_var]
+
     image_display_var = int(output_type_var.get())
     show_full_image = False
     if image_display_var == 2000:
@@ -501,6 +547,7 @@ def transform_image():
     affine_ref = Affine()
 
     if not input_selected_file:
+        close_progressbar()
         messagebox.showerror("Error", "Please select the input file")
         return
 
@@ -540,7 +587,21 @@ def transform_image():
 
         output_img_name, height, width = affine_ref.affine_transform(input_selected_file, pts1, pts2)
 
-    place_output_image(output_img_name, height, width)
+    elif operation == "Polar Transformation":
+
+        x_c, y_c, r = get_and_check_inputs_polar_and_log_polar()
+        output_img_name, height, width = transformation_ref.polar_transform(input_selected_file, x_c, y_c, r)
+
+
+    elif operation == "Log Polar Transformation":
+        x_c, y_c, r = get_and_check_inputs_polar_and_log_polar()
+        output_img_name, height, width = transformation_ref.log_polar_transform(input_selected_file,x_c,y_c,r)
+
+    try:
+        place_output_image(output_img_name, height, width)
+    except Exception as exp:
+        print("Exception is ", exp)
+        close_progressbar()
 
 
 def place_output_image(output_img_name, height, width):
@@ -601,14 +662,18 @@ def reset():
     input_selected_file = None
 
 
+
+
+
 def init_default_input():
-    global offset_param, default_input_file_path, input_image, input_photo, input_photo_panel
+    global offset_param, default_input_file_path, input_image, input_photo, input_photo_panel,selected_photo
 
     default_input_file_path = "default_input_image.png"
 
     input_image = Image.open(default_input_file_path)
     input_image = input_image.resize((DEFAULT_WIDTH, DEFAULT_HEIGHT), Image.ANTIALIAS)
     input_photo = ImageTk.PhotoImage(input_image)
+    selected_photo = input_photo
 
     input_photo_panel = Canvas(window, width=DEFAULT_WIDTH, height=DEFAULT_HEIGHT,bg="white")
     input_photo_panel.pack(expand=YES, fill=BOTH)
@@ -620,177 +685,188 @@ def init_default_input():
     #input_photo_panel.place(x=400 + offset_param, y=50)
     input_photo_panel.place(x=400 + offset_param, y=50)
 
-window = Tk()
 
-#size of the window
-window.geometry("1200x700")
-window.title("Image Geometric Transformations")
-window.configure(background="white")
-offset_param = 0
-input_selected_file = None
-save_img_name_ref = None
+try :
+    window = Tk()
 
-# placing input image
-input_title = Label(window,text="Image Preview",bg="white",fg="Tomato",font=("Helvetica", 16))
-input_title.place(x=490+offset_param, y=15)
-default_input_file_path = None
-input_image = None
-input_photo = None
-input_photo_panel = None
-init_default_input()
+    #size of the window
+    window.geometry("1200x700")
+    window.title("Image Geometric Transformations")
+    window.configure(background="white")
+    offset_param = 0
+    input_selected_file = None
+    save_img_name_ref = None
 
-
-#image details
-properties_label = None
-img_name = None
-img_name_val = None
-img_ht = None
-img_ht_val = None
-img_wd = None
-img_wd_val = None
-
-"""
-# placing output image
-output_title = Label(window,text="OUTPUT",bg="white",fg="Tomato",font=("Helvetica", 16))
-output_title.place(x=910+offset_param, y=15)
-default_output_file_path = "default_output_image.png"
-
-output_image = Image.open(default_output_file_path)
-output_image = output_image.resize((DEFAULT_WIDTH, DEFAULT_HEIGHT), Image.ANTIALIAS)
-output_photo = ImageTk.PhotoImage(output_image)
-
-output_photo_panel = Label(window, image = output_photo,bg="white",relief="groove")
-output_photo_panel.image = output_photo
-output_photo_panel.place(x=800+offset_param,y=50)
-"""
-
-# browse input image
-browse_btn = Button(window,text="Browse",width=7,command=open_explorer, bg="#337ab7",fg="white",font="none 10 bold")
-browse_btn.place(x=520+offset_param, y=360)
-
-#widgets for Scaling
-scale_x = None
-scale_x_entry = None
-scale_y = None
-scale_y_entry = None
-interpolations_popup = None
-interpolation_label = None
-interpolation_choice = StringVar(window)
-interpolation_techniques = ['Nearest Neigbhor','Bilinear','Cubic','Lanczos4']
-interpolation_choice.set('Nearest Neigbhor')
-
-#widgets for Rotation
-degrees = None
-degrees_entry = None
-direction_label = None
-popupMenu = None
-direction = StringVar(window)
-choices = ['Clockwise','Anti-Clockwise']
-direction.set('Clockwise')
-
-#widgets for Translation
-translate_x = None
-translate_x_entry = None
-translate_y = None
-translate_y_entry = None
-
-init_widgets()
-
-progress_canvas = None
-
-# Operations
-operation_label = Label(window,text="Select Operation",bg="white",fg="DodgerBlue",font=("Helvetica", 14))
-operation_label.place(x=200+offset_param,y=400)
-
-radiobtn_operation_var = IntVar()
-radiobtn_operation_var.set(1)
-
-operations_dict = {}
-init_operations()
-keys = operations_dict.keys()
-total_operations = len(keys)
-x_counter = 200
-y_counter = 430
-changed_col = False
-for idx,key in enumerate(keys):
-    option = Radiobutton(window,
-                text=operations_dict[key],
-                padx=20,
-                command=operation_changed,
-                variable=radiobtn_operation_var,
-                value=key,
-                bg="white")
-    option.place(x=x_counter+offset_param,y=y_counter)
-    y_counter += 30
-"""
-# Interpolations
-interpolation_label = Label(window,text="Select Interpolation",bg="white",fg="DodgerBlue",font=("Helvetica", 14))
-interpolation_label.place(x=100+offset_param,y=490)
-
-radiobtn_interpolation_var = IntVar()
-radiobtn_interpolation_var.set(100)
-
-interpolation_dict = {}
-init_interpolations()
-keys = interpolation_dict.keys()
-total_interpolations = len(keys)
-x_counter = 100
-y_counter = 520
-changed_col = False
-for idx,key in enumerate(keys):
-    option = Radiobutton(window,
-                text=interpolation_dict[key],
-                padx=20,
-                variable=radiobtn_interpolation_var,
-                value=key,
-                bg="white")
-    option.place(x=x_counter+offset_param,y=y_counter)
-    x_counter += 200
-    if not changed_col and idx >= total_interpolations/2-1:
-        changed_col = True
-        x_counter = 100
-        y_counter = 550
-"""
-
-# output image size
-#output_type_label = Label(window,text="Output Image",bg="white",fg="DodgerBlue",font=("Helvetica", 14))
-#output_type_label.place(x=100+offset_param,y=490)
-
-output_type_var = IntVar()
-output_type_var.set(1000)
-
-output_type_dict = {}
-"""
-init_output_types()
-keys = output_type_dict.keys()
-total_output_types = len(keys)
-x_counter = 100
-y_counter = 520
-changed_col = False
-for idx,key in enumerate(keys):
-    option = Radiobutton(window,
-                text=output_type_dict[key],
-                padx=20,
-                variable=output_type_var,
-                value=key,
-                bg="white")
-    option.place(x=x_counter+offset_param,y=y_counter)
-    x_counter += 200
-"""
-
-# ok button
-ok_btn = Button(window,text="Show",width=7,command=show_result, bg="#5cb85c",fg="white",font="none 10 bold")
-ok_btn.place(x=490+offset_param, y=620)
-
-# reset button
-reset_btn = Button(window,text="Reset",width=7,command=reset, bg="#d9534f",fg="white",font="none 10 bold")
-reset_btn.place(x=570+offset_param, y=620)
-
-#progress_bar = ttk.Progressbar(window,orient ="horizontal",length = 200, mode ="indeterminate")
+    # placing input image
+    input_title = Label(window,text="Image Preview",bg="white",fg="Tomato",font=("Helvetica", 16))
+    input_title.place(x=490+offset_param, y=15)
+    default_input_file_path = None
+    input_image = None
+    input_photo = None
+    input_photo_panel = None
+    init_default_input()
 
 
-params_label = Label(window,text="Parameters",bg="white",fg="DodgerBlue",font=("Helvetica", 14))
-params_label.place(x=800+offset_param,y=395)
-create_widgets(1)
+    #image details
+    properties_label = None
+    img_name = None
+    img_name_val = None
+    img_ht = None
+    img_ht_val = None
+    img_wd = None
+    img_wd_val = None
 
-window.mainloop()
+    """
+    # placing output image
+    output_title = Label(window,text="OUTPUT",bg="white",fg="Tomato",font=("Helvetica", 16))
+    output_title.place(x=910+offset_param, y=15)
+    default_output_file_path = "default_output_image.png"
+    
+    output_image = Image.open(default_output_file_path)
+    output_image = output_image.resize((DEFAULT_WIDTH, DEFAULT_HEIGHT), Image.ANTIALIAS)
+    output_photo = ImageTk.PhotoImage(output_image)
+    
+    output_photo_panel = Label(window, image = output_photo,bg="white",relief="groove")
+    output_photo_panel.image = output_photo
+    output_photo_panel.place(x=800+offset_param,y=50)
+    """
+
+    # browse input image
+    browse_btn = Button(window,text="Browse",width=7,command=open_explorer, bg="#337ab7",fg="white",font="none 10 bold")
+    browse_btn.place(x=520+offset_param, y=360)
+
+    #widgets for Scaling
+    scale_x = None
+    scale_x_entry = None
+    scale_y = None
+    scale_y_entry = None
+    interpolations_popup = None
+    interpolation_label = None
+    interpolation_choice = StringVar(window)
+    interpolation_techniques = ['Nearest Neigbhor','Bilinear','Cubic','Lanczos4']
+    interpolation_choice.set('Nearest Neigbhor')
+
+    #widgets for Rotation
+    degrees = None
+    degrees_entry = None
+    direction_label = None
+    popupMenu = None
+    direction = StringVar(window)
+    choices = ['Clockwise','Anti-Clockwise']
+    direction.set('Clockwise')
+
+    #widgets for Translation
+    translate_x = None
+    translate_x_entry = None
+    translate_y = None
+    translate_y_entry = None
+
+    #widgets for polar and log polar
+    center = None
+    center_x_entry = None
+    center_y_entry = None
+    radius = None
+    radius_entry = None
+
+    init_widgets()
+
+    progress_canvas = None
+
+    # Operations
+    operation_label = Label(window,text="Select Operation",bg="white",fg="DodgerBlue",font=("Helvetica", 14))
+    operation_label.place(x=200+offset_param,y=400)
+
+    radiobtn_operation_var = IntVar()
+    radiobtn_operation_var.set(1)
+
+    operations_dict = {}
+    init_operations()
+    keys = operations_dict.keys()
+    total_operations = len(keys)
+    x_counter = 200
+    y_counter = 430
+    changed_col = False
+    for idx,key in enumerate(keys):
+        option = Radiobutton(window,
+                    text=operations_dict[key],
+                    padx=20,
+                    command=operation_changed,
+                    variable=radiobtn_operation_var,
+                    value=key,
+                    bg="white")
+        option.place(x=x_counter+offset_param,y=y_counter)
+        y_counter += 30
+    """
+    # Interpolations
+    interpolation_label = Label(window,text="Select Interpolation",bg="white",fg="DodgerBlue",font=("Helvetica", 14))
+    interpolation_label.place(x=100+offset_param,y=490)
+    
+    radiobtn_interpolation_var = IntVar()
+    radiobtn_interpolation_var.set(100)
+    
+    interpolation_dict = {}
+    init_interpolations()
+    keys = interpolation_dict.keys()
+    total_interpolations = len(keys)
+    x_counter = 100
+    y_counter = 520
+    changed_col = False
+    for idx,key in enumerate(keys):
+        option = Radiobutton(window,
+                    text=interpolation_dict[key],
+                    padx=20,
+                    variable=radiobtn_interpolation_var,
+                    value=key,
+                    bg="white")
+        option.place(x=x_counter+offset_param,y=y_counter)
+        x_counter += 200
+        if not changed_col and idx >= total_interpolations/2-1:
+            changed_col = True
+            x_counter = 100
+            y_counter = 550
+    """
+
+    # output image size
+    #output_type_label = Label(window,text="Output Image",bg="white",fg="DodgerBlue",font=("Helvetica", 14))
+    #output_type_label.place(x=100+offset_param,y=490)
+
+    output_type_var = IntVar()
+    output_type_var.set(1000)
+
+    output_type_dict = {}
+    """
+    init_output_types()
+    keys = output_type_dict.keys()
+    total_output_types = len(keys)
+    x_counter = 100
+    y_counter = 520
+    changed_col = False
+    for idx,key in enumerate(keys):
+        option = Radiobutton(window,
+                    text=output_type_dict[key],
+                    padx=20,
+                    variable=output_type_var,
+                    value=key,
+                    bg="white")
+        option.place(x=x_counter+offset_param,y=y_counter)
+        x_counter += 200
+    """
+
+    # ok button
+    ok_btn = Button(window,text="Show",width=7,command=show_result, bg="#5cb85c",fg="white",font="none 10 bold")
+    ok_btn.place(x=490+offset_param, y=620)
+
+    # reset button
+    reset_btn = Button(window,text="Reset",width=7,command=reset, bg="#d9534f",fg="white",font="none 10 bold")
+    reset_btn.place(x=570+offset_param, y=620)
+
+    #progress_bar = ttk.Progressbar(window,orient ="horizontal",length = 200, mode ="indeterminate")
+
+
+    params_label = Label(window,text="Parameters",bg="white",fg="DodgerBlue",font=("Helvetica", 14))
+    params_label.place(x=800+offset_param,y=395)
+    create_widgets(1)
+
+    window.mainloop()
+except Exception as exp:
+    print("Exception", exp)
