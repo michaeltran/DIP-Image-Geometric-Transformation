@@ -402,9 +402,6 @@ def init_widgets():
     affine_pt5.bind("<Button-1>", lambda event : SelectAffineLabel(event, affine_pt5))
     affine_pt6.bind("<Button-1>", lambda event : SelectAffineLabel(event, affine_pt6))
 
-    shear_x = Label(window, text="Shear X", bg="white")
-    shear_x_entry = Entry(window, width=10, relief="ridge", bg="#F5F5F5")
-
     center = Label(window, text="Center (x,y)", bg="white")
     center_x_entry = Entry(window, width=10, relief="ridge", bg="#F5F5F5")
     center_y_entry = Entry(window, width=10, relief="ridge", bg="#F5F5F5")
