@@ -1,7 +1,6 @@
 import cv2
 import numpy as np
-from Interpolation import interpolation
-from Scaling import Scaling
+from Interpolate import Interpolate
 
 class Affine:
 
@@ -32,7 +31,7 @@ class Affine:
         M = self.getAffineMatrix(pts1, pts2)
 
         #dst = cv2.warpAffine(input_image, M, (cols,rows))
-        dst = self.warpAffine(input_image, M, 1, 1)
+        dst = self.warpAffine(input_image, M, 1, 1, interpolation)
 
         cv2.imwrite(file_name, dst)
 
@@ -47,7 +46,7 @@ class Affine:
         M = np.append(M, [[1, shear_x, 0]], axis = 0)
         M = np.append(M, [[shear_y, 1, 0]], axis = 0)
 
-        dst = self.warpAffine(input_image, M, 1 + shear_x, 1 + shear_y)
+        dst = self.warpAffine(input_image, M, 1 + shear_x, 1 + shear_y, interpolation)
         cv2.imwrite(file_name, dst)
 
         return file_name, rows, cols
@@ -82,8 +81,10 @@ class Affine:
 
         return M
 
-    def warpAffine(self, img, M, image_size_factor_x, image_size_factor_y):
+    def warpAffine(self, img, M, image_size_factor_x, image_size_factor_y, interpolation):
         rows, cols, ch = img.shape
+
+        interpolate_ref = Interpolate()
 
         ## SHEAR RESIZING
         real_image_size_factor_x = image_size_factor_x
@@ -149,6 +150,6 @@ class Affine:
                 y = pos[1][0]
 
                 if (x <= rows - 1 and x >= 0 and y <= cols - 1 and y >= 0):
-                    result_image[y_prime + y_shift][x_prime + x_shift] += GetBilinearPixel(img, x, y)
+                    result_image[y_prime + y_shift][x_prime + x_shift] += interpolate_ref.get_value(img, y, x, interpolation)
 
         return result_image

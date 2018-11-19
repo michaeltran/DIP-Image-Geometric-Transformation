@@ -1,7 +1,6 @@
 import numpy as np
 from Interpolate import Interpolate
 
-
 class PolarCoordinates:
     def polar_transform(self, image, center, max_radius, interpolation):
         width, height, ch = image.shape
@@ -21,7 +20,6 @@ class PolarCoordinates:
                 x = x + center[0] # shift from center
                 y = real_rho * np.sin(real_theta)
                 y = y + center[1] # shift from center
-                # add interpolation methods here
 
                 if (x > height or y > width or x < 0 or y < 0):
                     continue
@@ -52,8 +50,6 @@ class PolarCoordinates:
 
                 if (x > height or y > width or x < 0 or y < 0):
                     continue
-
-                # add interpolation methods here
 
                 result_image[theta][rho] = interpolate_ref.get_value(image, y, x, interpolation)
 
