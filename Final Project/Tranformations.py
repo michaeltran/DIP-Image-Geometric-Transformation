@@ -63,26 +63,26 @@ class Transformations:
 
         return file_name, rows, cols
 
-    def polar_transform(self, image_name, center_x, center_y, radius):
+    def polar_transform(self, image_name, center_x, center_y, radius, interpolation):
         input_image = cv2.imread(image_name, 1)
         print(input_image.shape)
         file_name = "ReferenceImages/polar.jpg"
 
         polarcoordinates = PolarCoordinates()
-        polar_transform = polarcoordinates.polar_transform(input_image, (center_x, center_y), radius)
+        polar_transform = polarcoordinates.polar_transform(input_image, (center_x, center_y), radius, interpolation)
 
         cv2.imwrite(file_name, polar_transform)
         rows, cols = polar_transform.shape[0], polar_transform.shape[1]
 
         return file_name, rows, cols
 
-    def log_polar_transform(self,image_name, center_x, center_y, radius):
+    def log_polar_transform(self,image_name, center_x, center_y, radius, interpolation):
         input_image = cv2.imread(image_name, 1)
         print(input_image.shape)
         file_name = "ReferenceImages/logpolar.jpg"
 
         polarcoordinates = PolarCoordinates()
-        logpolar_transform = polarcoordinates.log_polar_transform(input_image, (center_x, center_y), radius)
+        logpolar_transform = polarcoordinates.log_polar_transform(input_image, (center_x, center_y), radius, interpolation)
 
         cv2.imwrite(file_name, logpolar_transform)
         rows, cols = logpolar_transform.shape[0], logpolar_transform.shape[1]

@@ -5,7 +5,7 @@ from Scaling import Scaling
 
 class Affine:
 
-    def affine_transform(self, image_name, pts1, pts2):
+    def affine_transform(self, image_name, pts1, pts2, interpolation):
         input_image = cv2.imread(image_name, 1)
         file_name = "ReferenceImages/affine.jpg"
         rows, cols, ch = input_image.shape
@@ -38,7 +38,7 @@ class Affine:
 
         return file_name, rows, cols
 
-    def shear_transform(self, image_name, shear_x, shear_y):
+    def shear_transform(self, image_name, shear_x, shear_y, interpolation):
         input_image = cv2.imread(image_name, 1)
         file_name = "ReferenceImages/shear.jpg"
         rows, cols, ch = input_image.shape

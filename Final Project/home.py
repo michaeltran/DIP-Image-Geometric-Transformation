@@ -253,6 +253,8 @@ def create_widgets(operation_val):
         shear_y.place(x=800+offset_param, y=457)
         shear_y_entry.place(x=900+offset_param,y=460)
         shear_y_entry.insert(0,"0")
+        interpolation_label.place(x=800 + offset_param, y=493)
+        interpolations_popup.place(x=900 + offset_param, y=490)
 
     elif operation_val == 5:
         affine_pt1.place(x=800+offset_param, y=427)
@@ -279,6 +281,9 @@ def create_widgets(operation_val):
         affine_pt6_x_entry.place(x=950+offset_param, y=580)
         affine_pt6_y_entry.place(x=950+offset_param + 75, y=580)
 
+        interpolation_label.place(x=800 + offset_param, y=613)
+        interpolations_popup.place(x=950 + offset_param, y=610)
+
         global current_bolded_pt
         affine_pt1.config(font=bold_text)
         affine_pt2.config(font=normal_text)
@@ -290,13 +295,15 @@ def create_widgets(operation_val):
 
     elif operation_val == 6 or operation_val == 7:
         center.place(x=800 + offset_param,y=427)
-        center_x_entry.place(x=950+offset_param,y=430)
+        center_x_entry.place(x=900+offset_param,y=430)
         center_x_entry.insert(0,"0")
-        center_y_entry.place(x=950+offset_param+75,y=430)
+        center_y_entry.place(x=900+offset_param+75,y=430)
         center_y_entry.insert(0, "0")
         radius.place(x=800+offset_param,y=457)
-        radius_entry.place(x=950+offset_param,y=460)
+        radius_entry.place(x=900+offset_param,y=460)
         radius_entry.insert(0, "0")
+        interpolation_label.place(x=800 + offset_param, y=493)
+        interpolations_popup.place(x=900 + offset_param, y=490)
 
 
 def operation_changed():
@@ -571,8 +578,9 @@ def transform_image():
     elif operation == "Shear":
         shear_x_value = float(shear_x_entry.get())
         shear_y_value = float(shear_y_entry.get())
+        selected_interpolation = interpolation_choice.get()
 
-        output_img_name, height, width = affine_ref.shear_transform(input_selected_file, shear_x_value, shear_y_value)
+        output_img_name, height, width = affine_ref.shear_transform(input_selected_file, shear_x_value, shear_y_value, selected_interpolation)
 
     elif operation == "Affine Transformation":
         pts1 = np.float32([[float(affine_pt1_x_entry.get()) * resize_factor_x, float(affine_pt1_y_entry.get()) * resize_factor_y], 
@@ -581,18 +589,22 @@ def transform_image():
         pts2 = np.float32([[float(affine_pt4_x_entry.get()) * resize_factor_x, float(affine_pt4_y_entry.get()) * resize_factor_y],
                            [float(affine_pt5_x_entry.get()) * resize_factor_x, float(affine_pt5_y_entry.get()) * resize_factor_y],
                            [float(affine_pt6_x_entry.get()) * resize_factor_x, float(affine_pt6_y_entry.get()) * resize_factor_y]])
+        selected_interpolation = interpolation_choice.get()
 
-        output_img_name, height, width = affine_ref.affine_transform(input_selected_file, pts1, pts2)
+        output_img_name, height, width = affine_ref.affine_transform(input_selected_file, pts1, pts2, selected_interpolation)
 
     elif operation == "Polar Transformation":
 
         x_c, y_c, r = get_and_check_inputs_polar_and_log_polar()
-        output_img_name, height, width = transformation_ref.polar_transform(input_selected_file, x_c, y_c, r)
+        selected_interpolation = interpolation_choice.get()
 
+        output_img_name, height, width = transformation_ref.polar_transform(input_selected_file, x_c, y_c, r, selected_interpolation)
 
     elif operation == "Log Polar Transformation":
         x_c, y_c, r = get_and_check_inputs_polar_and_log_polar()
-        output_img_name, height, width = transformation_ref.log_polar_transform(input_selected_file,x_c,y_c,r)
+        selected_interpolation = interpolation_choice.get()
+
+        output_img_name, height, width = transformation_ref.log_polar_transform(input_selected_file,x_c, y_c, r,selected_interpolation)
 
     try:
         place_output_image(output_img_name, height, width)
