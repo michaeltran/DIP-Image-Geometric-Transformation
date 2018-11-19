@@ -27,9 +27,6 @@
     <Content Include="ReferenceImages\rotation.jpg" />
     <Content Include="ReferenceImages\scaling.jpg" />
     <Content Include="ReferenceImages\translation.jpg" />
-    <Content Include="rotated_image.png" />
-    <Content Include="test.png" />
-    <Content Include="translate_test.png" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Affine.py">
@@ -37,7 +34,9 @@
     </Compile>
     <Compile Include="home.py" />
     <Compile Include="Interpolation.py" />
-    <Compile Include="log_polar.py" />
+    <Compile Include="PolarCoordinates.py">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="Rotation.py" />
     <Compile Include="Scaling.py" />
     <Compile Include="Tranformations.py" />

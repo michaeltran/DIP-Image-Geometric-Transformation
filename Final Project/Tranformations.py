@@ -2,7 +2,7 @@ import cv2
 from Scaling import Scaling
 from Translation import Translation
 from Rotation import Rotation
-from LogPolar import LogPolar
+from PolarCoordinates import PolarCoordinates
 
 class Transformations:
 
@@ -63,12 +63,13 @@ class Transformations:
 
         return file_name, rows, cols
 
-    def polar_transform(self,image_name, center_x, center_y, radius):
+    def polar_transform(self, image_name, center_x, center_y, radius):
         input_image = cv2.imread(image_name, 1)
         print(input_image.shape)
         file_name = "ReferenceImages/polar.jpg"
 
-        polar_transform = None
+        polarcoordinates = PolarCoordinates()
+        polar_transform = polarcoordinates.polar_transform(input_image, (center_x, center_y), radius)
 
         cv2.imwrite(file_name, polar_transform)
         rows, cols = polar_transform.shape[0], polar_transform.shape[1]
@@ -80,8 +81,8 @@ class Transformations:
         print(input_image.shape)
         file_name = "ReferenceImages/logpolar.jpg"
 
-        logpolar = LogPolar()
-        logpolar_transform = logpolar.logpolar_naive(input_image,center_x,center_y)
+        polarcoordinates = PolarCoordinates()
+        logpolar_transform = polarcoordinates.log_polar_transform(input_image, (center_x, center_y), radius)
 
         cv2.imwrite(file_name, logpolar_transform)
         rows, cols = logpolar_transform.shape[0], logpolar_transform.shape[1]
