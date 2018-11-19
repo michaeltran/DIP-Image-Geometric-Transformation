@@ -96,7 +96,7 @@ class Scaling:
                 y = j / fy
 
                 Image1[i, j,:] = interpolate_ref.get_value(image, x, y, 'Lanczos4')
-                
+
         image = Image1
 
         return image
