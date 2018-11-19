@@ -170,6 +170,23 @@ def CreatePhotoCanvas():
 
     input_photo_panel.bind("<Button 1>", click_coords)
 
+def init_image_details():
+    global properties_label, img_name, img_name_val, img_ht, img_ht_val, img_wd, img_wd_val
+
+    properties_label = Label(window, text="Image Details", bg="white", fg="#337ab7", font=("Helvetica", 14))
+
+    img_name = Label(window, text="Name", bg="white", fg="#337ab7", font=("Helvetica", 10, "bold"))
+
+    img_name_val = Label(window, text="", bg="white", fg="#337ab7", font=("Helvetica", 10))
+
+    img_ht = Label(window, text="Height", bg="white", fg="#337ab7", font=("Helvetica", 10, "bold"))
+
+    img_ht_val = Label(window, text="" , bg="white", fg="#337ab7", font=("Helvetica", 10))
+
+    img_wd = Label(window, text="Width", bg="white", fg="#337ab7", font=("Helvetica", 10, "bold"))
+
+    img_wd_val = Label(window, text="", bg="white", fg="#337ab7", font=("Helvetica", 10))
+
 
 def place_image_details(file_path,size):
     global properties_label, img_name, img_name_val, img_ht, img_ht_val, img_wd, img_wd_val
@@ -182,19 +199,22 @@ def place_image_details(file_path,size):
     height = size[0]
     width = size[1]
 
-    properties_label = Label(window, text="Image Details", bg="white", fg="#337ab7", font=("Helvetica", 14))
+    #properties_label = Label(window, text="Image Details", bg="white", fg="#337ab7", font=("Helvetica", 14))
     properties_label.place(x=820 + offset_param, y=50)
-    img_name = Label(window, text="Name", bg="white", fg="#337ab7", font=("Helvetica", 10, "bold"))
+    #img_name = Label(window, text="Name", bg="white", fg="#337ab7", font=("Helvetica", 10, "bold"))
     img_name.place(x=820 + offset_param, y=90)
-    img_name_val = Label(window, text=name, bg="white", fg="#337ab7", font=("Helvetica", 10))
+    #img_name_val = Label(window, text=name, bg="white", fg="#337ab7", font=("Helvetica", 10))
+    img_name_val.config(text=name)
     img_name_val.place(x=910 + offset_param, y=90)
-    img_ht = Label(window, text="Height", bg="white", fg="#337ab7", font=("Helvetica", 10, "bold"))
+    #img_ht = Label(window, text="Height", bg="white", fg="#337ab7", font=("Helvetica", 10, "bold"))
     img_ht.place(x=820 + offset_param, y=120)
-    img_ht_val = Label(window, text = str(height) + " px", bg="white", fg="#337ab7", font=("Helvetica", 10))
+    #img_ht_val = Label(window, text = str(height) + " px", bg="white", fg="#337ab7", font=("Helvetica", 10))
+    img_ht_val.config(text=str(height) + " px")
     img_ht_val.place(x=910 + offset_param, y=120)
-    img_wd = Label(window, text="Width", bg="white", fg="#337ab7", font=("Helvetica", 10, "bold"))
+    #img_wd = Label(window, text="Width", bg="white", fg="#337ab7", font=("Helvetica", 10, "bold"))
     img_wd.place(x=820 + offset_param, y=150)
-    img_wd_val = Label(window, text = str(width) +" px", bg="white", fg="#337ab7", font=("Helvetica", 10))
+    #img_wd_val = Label(window, text = str(width) +" px", bg="white", fg="#337ab7", font=("Helvetica", 10))
+    img_wd_val.config(text=str(width) + " px")
     img_wd_val.place(x=910 + offset_param, y=150)
 
 
@@ -656,7 +676,7 @@ def save_img():
         messagebox.showerror("Sorry","Some error has occurred while saving")
 
 def reset():
-    global properties_label, img_name, img_name_val, img_ht, img_ht_val, img_wd, img_wd_val
+    #global properties_label, img_name, img_name_val, img_ht, img_ht_val, img_wd, img_wd_val
     global input_selected_file
 
     init_default_input()
@@ -716,6 +736,7 @@ try :
     init_default_input()
 
 
+
     #image details
     properties_label = None
     img_name = None
@@ -725,6 +746,7 @@ try :
     img_wd = None
     img_wd_val = None
 
+    init_image_details()
     """
     # placing output image
     output_title = Label(window,text="OUTPUT",bg="white",fg="Tomato",font=("Helvetica", 16))
