@@ -21,12 +21,8 @@
   <ItemGroup>
     <Content Include="default_input_image.png" />
     <Content Include="default_output_image.png" />
-    <Content Include="Inputs\current_input.png" />
     <Content Include="Lenna.png" />
     <Content Include="Lenna0.jpg" />
-    <Content Include="ReferenceImages\rotation.jpg" />
-    <Content Include="ReferenceImages\scaling.jpg" />
-    <Content Include="ReferenceImages\translation.jpg" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Affine.py">
