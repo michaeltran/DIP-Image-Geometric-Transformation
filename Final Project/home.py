@@ -44,7 +44,7 @@ def open_explorer():
     place_image_details(open_explorer.selected_file,input_ref_img.shape)
 
     CreatePhotoCanvas()
-
+    clear_output()
     #input_photo_panel = Label(window, image=selected_photo, bg="white", relief="groove")
     #input_photo_panel.image = selected_photo
     #input_photo_panel.place(x=400+offset_param, y=50)
@@ -135,7 +135,7 @@ def CreatePhotoCanvas():
     input_photo_panel.pack(expand=YES, fill=BOTH)
     input_photo_panel.create_image(2, 2, image=selected_photo, anchor=NW)
     input_photo_panel.img = selected_photo
-    input_photo_panel.place(x=400+offset_param, y=50)
+    input_photo_panel.place(x=200+offset_param, y=50)
 
     if affine_pt1_x_entry.get().isdigit() and affine_pt1_y_entry.get().isdigit():
         if current_bolded_pt == affine_pt1:
@@ -200,22 +200,22 @@ def place_image_details(file_path,size):
     width = size[1]
 
     #properties_label = Label(window, text="Image Details", bg="white", fg="#337ab7", font=("Helvetica", 14))
-    properties_label.place(x=820 + offset_param, y=50)
+    properties_label.place(x=550 + offset_param, y=50)
     #img_name = Label(window, text="Name", bg="white", fg="#337ab7", font=("Helvetica", 10, "bold"))
-    img_name.place(x=820 + offset_param, y=90)
+    img_name.place(x=550 + offset_param, y=90)
     #img_name_val = Label(window, text=name, bg="white", fg="#337ab7", font=("Helvetica", 10))
     img_name_val.config(text=name)
-    img_name_val.place(x=910 + offset_param, y=90)
+    img_name_val.place(x=640 + offset_param, y=90)
     #img_ht = Label(window, text="Height", bg="white", fg="#337ab7", font=("Helvetica", 10, "bold"))
-    img_ht.place(x=820 + offset_param, y=120)
+    img_ht.place(x=550 + offset_param, y=120)
     #img_ht_val = Label(window, text = str(height) + " px", bg="white", fg="#337ab7", font=("Helvetica", 10))
     img_ht_val.config(text=str(height) + " px")
-    img_ht_val.place(x=910 + offset_param, y=120)
+    img_ht_val.place(x=640 + offset_param, y=120)
     #img_wd = Label(window, text="Width", bg="white", fg="#337ab7", font=("Helvetica", 10, "bold"))
-    img_wd.place(x=820 + offset_param, y=150)
+    img_wd.place(x=550 + offset_param, y=150)
     #img_wd_val = Label(window, text = str(width) +" px", bg="white", fg="#337ab7", font=("Helvetica", 10))
     img_wd_val.config(text=str(width) + " px")
-    img_wd_val.place(x=910 + offset_param, y=150)
+    img_wd_val.place(x=640 + offset_param, y=150)
 
 
 def init_operations():
@@ -244,35 +244,35 @@ def create_widgets(operation_val):
     if operation_val == 1:
         scale_x.place(x=800+offset_param, y=427)
         scale_x_entry.place(x=900+offset_param,y=430)
-        scale_x_entry.insert(0,"1")
+        scale_x_entry.insert(0,1)
         scale_y.place(x=800+offset_param, y=457)
         scale_y_entry.place(x=900+offset_param, y=460)
-        scale_y_entry.insert(0, "1")
+        scale_y_entry.insert(0, 1)
         interpolation_label.place(x=800+offset_param,y= 493)
         interpolations_popup.place(x=900 + offset_param, y=490)
 
     elif operation_val == 2:
         degrees.place(x=800+offset_param, y=427)
         degrees_entry.place(x=900+offset_param,y=430)
-        degrees_entry.insert(0, "0")
+        degrees_entry.insert(0, 0)
         direction_label.place(x=800+offset_param, y=463)
         popupMenu.place(x=900+offset_param, y=460)
 
     elif operation_val == 3:
         translate_x.place(x=800+offset_param, y=427)
         translate_x_entry.place(x=900+offset_param,y=430)
-        translate_x_entry.insert(0,"0")
+        translate_x_entry.insert(0,0)
         translate_y.place(x=800+offset_param, y=457)
         translate_y_entry.place(x=900+offset_param, y=460)
-        translate_y_entry.insert(0, "0")
+        translate_y_entry.insert(0, 0)
 
     elif operation_val == 4:
         shear_x.place(x=800+offset_param, y=427)
         shear_x_entry.place(x=900+offset_param,y=430)
-        shear_x_entry.insert(0,"0")
+        shear_x_entry.insert(0,0)
         shear_y.place(x=800+offset_param, y=457)
         shear_y_entry.place(x=900+offset_param,y=460)
-        shear_y_entry.insert(0,"0")
+        shear_y_entry.insert(0,0)
         interpolation_label.place(x=800 + offset_param, y=493)
         interpolations_popup.place(x=900 + offset_param, y=490)
 
@@ -316,12 +316,12 @@ def create_widgets(operation_val):
     elif operation_val == 6 or operation_val == 7:
         center.place(x=800 + offset_param,y=427)
         center_x_entry.place(x=900+offset_param,y=430)
-        center_x_entry.insert(0,"0")
+        center_x_entry.insert(0,0)
         center_y_entry.place(x=900+offset_param+75,y=430)
-        center_y_entry.insert(0, "0")
+        center_y_entry.insert(0, 0)
         radius.place(x=800+offset_param,y=457)
         radius_entry.place(x=900+offset_param,y=460)
-        radius_entry.insert(0, "0")
+        radius_entry.insert(0, 0)
         interpolation_label.place(x=800 + offset_param, y=493)
         interpolations_popup.place(x=900 + offset_param, y=490)
 
@@ -350,26 +350,26 @@ def init_widgets():
 
 
     scale_x = Label(window, text="Scale X Factor", bg="white")
-    scale_x_entry = Entry(window, width=10, relief="ridge", bg="#F5F5F5")
+    scale_x_entry =  Spinbox(window, from_=0, to=1000, width=10,increment=0.5)
     scale_y = Label(window, text="Scale Y Factor", bg="white")
-    scale_y_entry = Entry(window, width=10, relief="ridge", bg="#F5F5F5")
+    scale_y_entry = Spinbox(window, from_=0, to=1000, width=10,increment=0.5)
     interpolation_label = Label(window, text="Interpolation", bg="white")
     interpolations_popup = OptionMenu(window, interpolation_choice, *interpolation_techniques)
 
     degrees = Label(window, text="Rotation Angle", bg="white")
-    degrees_entry = Entry(window, width=10, relief="ridge", bg="#F5F5F5")
+    degrees_entry = Spinbox(window, from_=0, to=360, width=10,increment=10)
     direction_label = Label(window, text="Direction", bg="white")
     popupMenu = OptionMenu(window, direction, *choices)
 
     translate_x = Label(window, text="Translate X", bg="white")
-    translate_x_entry = Entry(window, width=10, relief="ridge", bg="#F5F5F5")
+    translate_x_entry = Spinbox(window, from_=-1000, to=1000, width=10,increment=1)
     translate_y = Label(window, text="Translate Y", bg="white")
-    translate_y_entry = Entry(window, width=10, relief="ridge", bg="#F5F5F5")
+    translate_y_entry = Spinbox(window, from_=-1000, to=1000, width=10,increment=1)
 
     shear_x = Label(window, text="Shear X", bg="white")
-    shear_x_entry = Entry(window, width=10, relief="ridge", bg="#F5F5F5")
+    shear_x_entry = Spinbox(window, from_=-1, to=1, width=10,increment=0.1)
     shear_y = Label(window, text="Shear Y", bg="white")
-    shear_y_entry = Entry(window, width=10, relief="ridge", bg="#F5F5F5") 
+    shear_y_entry = Spinbox(window, from_=-1, to=1, width=10,increment=0.1)
 
     def PhotoCanvasCallback(sv):
         CreatePhotoCanvas()
@@ -400,23 +400,35 @@ def init_widgets():
     sv12.trace("w", lambda name, index, mode, sv=sv12: PhotoCanvasCallback(sv12))
 
     affine_pt1 = Label(window, text="Original Point 1 (x, y)", bg="white", font=('helvetica', 9))
-    affine_pt1_x_entry = Entry(window, width=10, relief="ridge", bg="#F5F5F5", textvariable=sv1)
-    affine_pt1_y_entry = Entry(window, width=10, relief="ridge", bg="#F5F5F5", textvariable=sv2)
+    affine_pt1_x_entry = Spinbox(window, from_=0, to=1000, width=7,increment=10)
+    affine_pt1_x_entry.configure(textvariable = sv1)
+    affine_pt1_y_entry = Spinbox(window, from_=0, to=1000, width=7,increment=10)
+    affine_pt1_y_entry.configure(textvariable=sv2)
     affine_pt2 = Label(window, text="Original Point 2 (x, y)", bg="white", font=('helvetica', 9))
-    affine_pt2_x_entry = Entry(window, width=10, relief="ridge", bg="#F5F5F5", textvariable=sv3)
-    affine_pt2_y_entry = Entry(window, width=10, relief="ridge", bg="#F5F5F5", textvariable=sv4)
+    affine_pt2_x_entry = Spinbox(window, from_=0, to=1000, width=7,increment=10)
+    affine_pt2_x_entry.configure(textvariable=sv3)
+    affine_pt2_y_entry = Spinbox(window, from_=0, to=1000, width=7,increment=10)
+    affine_pt2_y_entry.configure(textvariable=sv4)
     affine_pt3 = Label(window, text="Original Point 3 (x, y)", bg="white", font=('helvetica', 9))
-    affine_pt3_x_entry = Entry(window, width=10, relief="ridge", bg="#F5F5F5", textvariable=sv5)
-    affine_pt3_y_entry = Entry(window, width=10, relief="ridge", bg="#F5F5F5", textvariable=sv6)
+    affine_pt3_x_entry = Spinbox(window, from_=0, to=1000, width=7,increment=10)
+    affine_pt3_x_entry.configure(textvariable=sv5)
+    affine_pt3_y_entry = Spinbox(window, from_=0, to=1000, width=7,increment=10)
+    affine_pt3_y_entry.configure(textvariable=sv6)
     affine_pt4 = Label(window, text="Target Point 1 (x, y)", bg="white", font=('helvetica', 9))
-    affine_pt4_x_entry = Entry(window, width=10, relief="ridge", bg="#F5F5F5", textvariable=sv7)
-    affine_pt4_y_entry = Entry(window, width=10, relief="ridge", bg="#F5F5F5", textvariable=sv8)
+    affine_pt4_x_entry = Spinbox(window, from_=0, to=1000, width=7,increment=10)
+    affine_pt4_x_entry.configure(textvariable=sv7)
+    affine_pt4_y_entry = Spinbox(window, from_=0, to=1000, width=7,increment=10)
+    affine_pt4_y_entry.configure(textvariable=sv8)
     affine_pt5 = Label(window, text="Target Point 2 (x, y)", bg="white", font=('helvetica', 9))
-    affine_pt5_x_entry = Entry(window, width=10, relief="ridge", bg="#F5F5F5", textvariable=sv9)
-    affine_pt5_y_entry = Entry(window, width=10, relief="ridge", bg="#F5F5F5", textvariable=sv10)
+    affine_pt5_x_entry = Spinbox(window, from_=0, to=1000, width=7,increment=10)
+    affine_pt5_x_entry.configure(textvariable=sv9)
+    affine_pt5_y_entry = Spinbox(window, from_=0, to=1000, width=7,increment=10)
+    affine_pt5_y_entry.configure(textvariable=sv10)
     affine_pt6 = Label(window, text="Target Point 3 (x, y)", bg="white", font=('helvetica', 9))
-    affine_pt6_x_entry = Entry(window, width=10, relief="ridge", bg="#F5F5F5", textvariable=sv11)
-    affine_pt6_y_entry = Entry(window, width=10, relief="ridge", bg="#F5F5F5", textvariable=sv12)
+    affine_pt6_x_entry = Spinbox(window, from_=0, to=1000, width=7,increment=10)
+    affine_pt6_x_entry.configure(textvariable=sv11)
+    affine_pt6_y_entry = Spinbox(window, from_=0, to=1000, width=7,increment=10)
+    affine_pt6_y_entry.configure(textvariable=sv12)
 
     global current_bolded_pt
     affine_pt1.config(font=bold_text)
@@ -430,10 +442,12 @@ def init_widgets():
     affine_pt6.bind("<Button-1>", lambda event : SelectAffineLabel(event, affine_pt6))
 
     center = Label(window, text="Center (x,y)", bg="white")
-    center_x_entry = Entry(window, width=10, relief="ridge", bg="#F5F5F5")
-    center_y_entry = Entry(window, width=10, relief="ridge", bg="#F5F5F5")
+    center_x_entry = Spinbox(window, from_=0, to=1000, width=7,increment=10)
+    center_y_entry = Spinbox(window, from_=0, to=1000, width=7,increment=10)
     radius = Label(window, text="Radius", bg="white")
-    radius_entry = Entry(window, width=10, relief="ridge", bg="#F5F5F5")
+    radius_entry = Spinbox(window, from_=0, to=1000, width=7,increment=10)
+
+
 
 
 def SelectAffineLabel(event, pt):
@@ -519,6 +533,7 @@ def remove_all_widgets():
 
 
 def show_result():
+    clear_output()
     thread_1 = threading.Thread(target=transform_image)
     show_progressbar()
     thread_1.start()
@@ -635,24 +650,36 @@ def transform_image():
 
 def place_output_image(output_img_name, height, width):
     global save_img_name_ref
+    global output_photo_panel, output_title
+    global show_full_res_btn,save_img_btn
+    global output_ht, output_wd
 
     close_progressbar()
     #progress_canvas.destroy()
-
+    output_title.place(x=860,y=15)
     output_image = Image.open(output_img_name)
-    output_image = output_image.resize((width, height), Image.ANTIALIAS)
+    output_image = output_image.resize((DEFAULT_WIDTH, DEFAULT_HEIGHT), Image.ANTIALIAS)
     output_photo = ImageTk.PhotoImage(output_image)
 
     save_img_name_ref = output_img_name
+    output_ht = height
+    output_wd = width
 
-    """
-    output_photo_panel = Label(window, image=output_photo, bg="white", relief="groove")
+    output_photo_panel = Label(window, image=output_photo, bg="white")
     output_photo_panel.image = output_photo
-    output_photo_panel.place(x=800 + offset_param, y=50)
-    """
+    output_photo_panel.place(x=750 + offset_param, y=50)
+
+    show_full_res_btn.place(x=760,y=360)
+    save_img_btn.place(x=975,y=360)
+
+
+def view_original():
+    output_image = Image.open(save_img_name_ref)
+    output_image = output_image.resize((output_wd, output_ht), Image.ANTIALIAS)
+    output_photo = ImageTk.PhotoImage(output_image)
 
     output_canvas = Toplevel()
-    canvas = Canvas(output_canvas, width=width+100, height=height+100,bg="white")
+    canvas = Canvas(output_canvas, width=output_wd+100, height=output_ht+100,bg="white")
     canvas.pack(expand=YES, fill=BOTH)
 
     save_btn = Button(canvas, text="Save",width=7, bg="#5cb85c",fg="white",command=save_img)
@@ -660,10 +687,9 @@ def place_output_image(output_img_name, height, width):
 
     # image not visual
     canvas.create_image(50, 50, image=output_photo, anchor=NW)
-    save_btn.place(x=width/2+20,y=20)
+    save_btn.place(x=output_wd/2+20,y=20)
     # assigned the gif1 to the canvas object
     canvas.img = output_photo
-
 
 def save_img():
     filename = filedialog.asksaveasfilename()
@@ -690,7 +716,7 @@ def reset():
 
     input_selected_file = None
 
-
+    clear_output()
 
 
 
@@ -712,7 +738,17 @@ def init_default_input():
     #input_photo_panel = Label(window, image=input_photo, bg="white", relief="groove")
     #input_photo_panel.image = input_photo
     #input_photo_panel.place(x=400 + offset_param, y=50)
-    input_photo_panel.place(x=400 + offset_param, y=50)
+    input_photo_panel.place(x=200 + offset_param, y=50)
+
+
+def clear_output():
+    global output_photo_panel, output_title
+    global show_full_res_btn, save_img_btn
+
+    output_photo_panel.place_forget()
+    output_title.place_forget()
+    show_full_res_btn.place_forget()
+    save_img_btn.place_forget()
 
 
 try :
@@ -728,7 +764,7 @@ try :
 
     # placing input image
     input_title = Label(window,text="Image Preview",bg="white",fg="Tomato",font=("Helvetica", 16))
-    input_title.place(x=490+offset_param, y=15)
+    input_title.place(x=290+offset_param, y=15)
     default_input_file_path = None
     input_image = None
     input_photo = None
@@ -747,10 +783,10 @@ try :
     img_wd_val = None
 
     init_image_details()
-    """
+
     # placing output image
-    output_title = Label(window,text="OUTPUT",bg="white",fg="Tomato",font=("Helvetica", 16))
-    output_title.place(x=910+offset_param, y=15)
+    output_title = Label(window,text="Result",bg="white",fg="Tomato",font=("Helvetica", 16))
+    #output_title.place(x=910+offset_param, y=15)
     default_output_file_path = "default_output_image.png"
     
     output_image = Image.open(default_output_file_path)
@@ -759,12 +795,13 @@ try :
     
     output_photo_panel = Label(window, image = output_photo,bg="white",relief="groove")
     output_photo_panel.image = output_photo
-    output_photo_panel.place(x=800+offset_param,y=50)
-    """
+    #output_photo_panel.place(x=800+offset_param,y=50)
+    show_full_res_btn = Button(window,text="View (Original Dimensions)",width=25,command=view_original, bg="#337ab7",fg="white",font="none 10 bold")
+    save_img_btn = Button(window,text="Save",width=7,command=save_img, bg="#5cb85c",fg="white",font="none 10 bold")
 
     # browse input image
     browse_btn = Button(window,text="Browse",width=7,command=open_explorer, bg="#337ab7",fg="white",font="none 10 bold")
-    browse_btn.place(x=520+offset_param, y=360)
+    browse_btn.place(x=320+offset_param, y=360)
 
     #widgets for Scaling
     scale_x = None
@@ -896,7 +933,7 @@ try :
 
     params_label = Label(window,text="Parameters",bg="white",fg="DodgerBlue",font=("Helvetica", 14))
     params_label.place(x=800+offset_param,y=395)
-    create_widgets(1)
+    operation_changed()
 
     window.mainloop()
 except Exception as exp:
