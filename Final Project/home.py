@@ -279,27 +279,27 @@ def create_widgets(operation_val):
     elif operation_val == 5:
         affine_pt1.place(x=800+offset_param, y=427)
         affine_pt1_x_entry.place(x=950+offset_param, y=430)
-        affine_pt1_y_entry.place(x=950+offset_param + 75, y=430)
+        affine_pt1_y_entry.place(x=950+offset_param + 90, y=430)
 
         affine_pt2.place(x=800+offset_param, y=457)
         affine_pt2_x_entry.place(x=950+offset_param, y=460)
-        affine_pt2_y_entry.place(x=950+offset_param + 75, y=460)
+        affine_pt2_y_entry.place(x=950+offset_param + 90, y=460)
 
         affine_pt3.place(x=800+offset_param, y=487)
         affine_pt3_x_entry.place(x=950+offset_param, y=490)
-        affine_pt3_y_entry.place(x=950+offset_param + 75, y=490)
+        affine_pt3_y_entry.place(x=950+offset_param + 90, y=490)
 
         affine_pt4.place(x=800+offset_param, y=517)
         affine_pt4_x_entry.place(x=950+offset_param, y=520)
-        affine_pt4_y_entry.place(x=950+offset_param + 75, y=520)
+        affine_pt4_y_entry.place(x=950+offset_param + 90, y=520)
 
         affine_pt5.place(x=800+offset_param, y=547)
         affine_pt5_x_entry.place(x=950+offset_param, y=550)
-        affine_pt5_y_entry.place(x=950+offset_param + 75, y=550)
+        affine_pt5_y_entry.place(x=950+offset_param + 90, y=550)
 
         affine_pt6.place(x=800+offset_param, y=577)
         affine_pt6_x_entry.place(x=950+offset_param, y=580)
-        affine_pt6_y_entry.place(x=950+offset_param + 75, y=580)
+        affine_pt6_y_entry.place(x=950+offset_param + 90, y=580)
 
         interpolation_label.place(x=800 + offset_param, y=613)
         interpolations_popup.place(x=950 + offset_param, y=610)
@@ -317,7 +317,7 @@ def create_widgets(operation_val):
         center.place(x=800 + offset_param,y=427)
         center_x_entry.place(x=900+offset_param,y=430)
         center_x_entry.insert(0,0)
-        center_y_entry.place(x=900+offset_param+75,y=430)
+        center_y_entry.place(x=900+offset_param+90,y=430)
         center_y_entry.insert(0, 0)
         radius.place(x=800+offset_param,y=457)
         radius_entry.place(x=900+offset_param,y=460)
