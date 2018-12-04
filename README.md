@@ -8,7 +8,7 @@
 4. Click Show to see the output.
 5. Below the output, you can find 2 more buttons. View (Original Dimensions) and Save.
    Clicking View (Original Dimensions) opens the image in a new window with the actual dimensions of the transformed image. 
-   Clicking Save will allow you to save the image. You can also find the Save option in the new output window which appears upon clicking View (Original Dimensions).
+   Clicking Save will allow you to save the image. You can also find the Save option in the new output window which appears upon clicking View (Original Dimensions). Please make sure to give the extension with the filename (Eg: Lenna.png, Lenna.jpg etc.)
 6. Reset button clears the image.
 
 For Scaling, Rotation, Translation, Shear, Polar Transformation and Log Polar Transformation, the user should enter the values for different parameters.
