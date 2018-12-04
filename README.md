@@ -1,6 +1,6 @@
 # Digital-Image-Processing-Final-Project
 
-#Instructions
+# Instructions
 
 1. Run the home.py file.
 2. Click Browse and select the image.
