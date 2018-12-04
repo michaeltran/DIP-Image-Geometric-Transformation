@@ -6,10 +6,11 @@ class Rotation:
         print("in rotate function call")
         PI = np.pi
 
-        if direction == "clockwise":  # clockwise
+        if direction == "counterclockwise":  # clockwise
             angle = float(angle)
 
-        elif direction == "counterclockwise":  # counterclockwise
+
+        elif direction == "clockwise":  # counterclockwise
             a = float(angle)
             angle = -a
 
@@ -20,46 +21,18 @@ class Rotation:
         width = sp[1]
         height = sp[0]
 
-        # x,y store the four corner coordinatation
-        x = [0, 0, 0, 0]
-        y = [0, 0, 0, 0]
-        x1 = [0, 0, 0, 0]
-        y1 = [0, 0, 0, 0]
-        x[0] = -(width - 1) / 2
-        x[1] = -x[0]
-        x[2] = -x[0]
-        x[3] = x[0]
-        y[0] = -(height - 1) / 2
-        y[1] = y[0]
-        y[2] = -y[0]
-        y[3] = -y[0]
-        # x1,y1 store the new image four corner coordinatation
-        for i in range(4):
-            x1[i] = (int)(x[i] * cos + y[i] * sin + 0.5)
-            y1[i] = (int)(-x[i] * sin + y[i] * cos + 0.5)
-
-        # newWidth=int(height * abs(sin) + width * abs(cos))
-        # newHeight=int (width * abs (sin) + height * abs (cos))
-        if (abs(y1[2] - y1[0]) > abs(y1[3] - y1[1])):
-            newHeight = abs(y1[2] - y1[0])
-            newWidth = abs(x1[3] - x1[1])
-
-        else:
-            newHeight = abs(y1[3] - y1[1])
-            newWidth = abs(x1[2] - x1[0])
+        newWidth = int(height * abs(sin) + width * abs(cos))
+        newHeight = int(width * abs(sin) + height * abs(cos))
 
         rotateImage = np.zeros((newHeight, newWidth, image.ndim), dtype=np.uint8)
-
-        fx = -1 * (newWidth - 1) * cos * 0.5 - (newHeight - 1) * sin * 0.5 + (width - 1) / 2
-        fy = (newWidth - 1) * sin * 0.5 - (newHeight - 1) * cos * 0.5 + (height - 1) / 2
 
         temp = np.array([0, 0, 0, 0], dtype=int)
         channel = image.ndim
         for i in range(newHeight):
             for j in range(newWidth):
-                # [s r 1] = [j i 1] * HINV*/
-                a = j * cos + i * sin + fx
-                b = -j * sin + i * cos + fy
+
+                a = cos * (j - (newWidth + 1) / 2) - sin * (i - (newHeight + 1) / 2) + (width + 1) / 2
+                b = sin * (j - (newWidth + 1) / 2) + cos * (i - (newHeight + 1) / 2) + (height + 1) / 2
 
                 # bilinear inpterpolation
                 if b < 1.0 or a < 1.0 or b >= height or a >= width:
