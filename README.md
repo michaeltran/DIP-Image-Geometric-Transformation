@@ -3,7 +3,7 @@
 # Instructions
 
 1. Run the home.py file.
-2. Click Browse and select the image.
+2. Click Browse and select the image(in image_for_input file).
 3. Select the operation you want to perform and input the requested parameters.
 4. Click Show to see the output.
 5. Below the output, you can find 2 more buttons. View (Original Dimensions) and Save.
